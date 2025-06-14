@@ -9,8 +9,8 @@ namespace OrderFood_BE.Infrastructure.Extensions
         {
             _ = services.AddConfigureOptions(configuration);
             _ = services.AddCustomDbContext(configuration);
-            //_ = services.AddCustomJwt(configuration);
-            //_ = services.AddServices();
+            _ = services.AddCustomJwt(configuration);
+            _ = services.AddServices();
 
             return services;
         }
