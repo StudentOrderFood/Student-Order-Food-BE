@@ -1,4 +1,5 @@
 
+using OrderFood_BE.Application.Extensions;
 using OrderFood_BE.Infrastructure.Extensions;
 
 namespace OrderFood_BE.WebAPI
@@ -10,7 +11,9 @@ namespace OrderFood_BE.WebAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            _ = builder.Services.AddApplication();
             _ = builder.Services.AddInfrastructure(builder.Configuration);
+            //_ = builder.Services.AddWebAPI(builder.Configuration);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -28,6 +31,7 @@ namespace OrderFood_BE.WebAPI
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
