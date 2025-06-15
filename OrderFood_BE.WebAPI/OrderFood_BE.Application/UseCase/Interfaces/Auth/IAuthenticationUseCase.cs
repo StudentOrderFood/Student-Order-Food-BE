@@ -10,7 +10,7 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Auth
 {
     public interface IAuthenticationUseCase
     {
-        Task<TokenResponse> StudentLoginAsync(string idToken);
+        Task<TokenResponse> StudentLoginAsync(IdTokenRequest request);
         Task<TokenResponse> GetNewAccessToken(TokenRequest request);
     }
 }

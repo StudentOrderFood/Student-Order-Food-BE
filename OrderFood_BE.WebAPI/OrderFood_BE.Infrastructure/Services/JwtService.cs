@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OrderFood_BE.Application.Repositories;
 using OrderFood_BE.Application.Services;
@@ -19,10 +20,10 @@ namespace OrderFood_BE.Infrastructure.Services
     {
         private readonly JwtSettings _jwtSettings;
         private readonly IGenericRepository<RefreshToken, Guid> _repository;
-        public JwtService(JwtSettings jwtSettings, IGenericRepository<RefreshToken, Guid> repository)
+        public JwtService(IOptions<JwtSettings> jwtSettings, IGenericRepository<RefreshToken, Guid> repository)
         {
-            _jwtSettings = jwtSettings ?? throw new ArgumentNullException(nameof(jwtSettings));
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _jwtSettings = jwtSettings.Value;
+            _repository = repository;
         }
         public string GenerateAccessToken()
         {
@@ -36,14 +37,15 @@ namespace OrderFood_BE.Infrastructure.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<string> GenerateRefreshTokenAsync()
+        public async Task<string> GenerateRefreshTokenAsync(Guid userId)
         {
             var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             var expiry = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpiryDays);
             var tokenEntity = new RefreshToken
             {
                 Token = refreshToken,
-                ExpiryDate = expiry
+                ExpiryDate = expiry,
+                UserId = userId
             };
 
             _ = await _repository.AddAsync(tokenEntity);

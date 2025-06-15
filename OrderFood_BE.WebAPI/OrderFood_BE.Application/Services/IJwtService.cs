@@ -10,7 +10,7 @@ namespace OrderFood_BE.Application.Services
     public interface IJwtService
     {
         string GenerateAccessToken();
-        Task<string> GenerateRefreshTokenAsync();
+        Task<string> GenerateRefreshTokenAsync(Guid userId);
         Task<bool> ValidateRefreshTokenAsync(Guid userId, string refreshToken);
     }
 }
