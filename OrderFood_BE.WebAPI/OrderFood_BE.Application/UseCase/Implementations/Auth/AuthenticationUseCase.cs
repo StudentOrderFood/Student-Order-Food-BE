@@ -81,7 +81,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
         /// </summary>
         /// <param name="idToken">The Firebase ID token.</param>
         /// <returns>A <see cref="TokenResponse"/> containing access and refresh tokens, user ID, and role.</returns>
-        public async Task<TokenResponse> StudentLoginAsync(string idToken)
+        public async Task<TokenResponse> StudentLoginAsync(IdTokenRequest request)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                 var auth = FirebaseAuth.GetAuth(_firebaseApp);
 
                 // Xác thực ID token và uid
-                var decodedToken = await auth.VerifyIdTokenAsync(idToken);
+                var decodedToken = await auth.VerifyIdTokenAsync(request.IdToken);
                 var uid = decodedToken.Uid;
                 //lấy thông tin user từ Firebase bằng UID
                 var user = await auth.GetUserAsync(uid);
@@ -101,11 +101,11 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                 // Case 1: Người dùng đã tồn tại trong DB => Trả về TokenReponse chứa thông tin người dùng
                 if (await _userRepository.ExistsByEmailAsync(user.Email))
                 {
-                    // Tạo JWT
-                    var accessToken = _jwtService.GenerateAccessToken();
-                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync();
                     // Lấy thông tin người dùng từ DB
                     var existingUser = await _userRepository.GetByEmailAsync(user.Email);
+                    // Tạo JWT
+                    var accessToken = _jwtService.GenerateAccessToken();
+                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync(existingUser.Id);            
                     return new TokenResponse
                     {
                         AccessToken = accessToken,
@@ -129,7 +129,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                         Id = Guid.NewGuid(),
                         Email = user.Email,
                         FullName = user.DisplayName,
-                        Phone = user.PhoneNumber,
+                        Phone = user.PhoneNumber ?? "",
                         RoleId = role.Id,
                         Avatar = user.PhotoUrl,
                     };
@@ -138,7 +138,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                     await _userRepository.SaveChangesAsync();
                     // Tạo JWT
                     var accessToken = _jwtService.GenerateAccessToken();
-                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync();
+                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync(User.Id);
                     return new TokenResponse
                     {
                         AccessToken = accessToken,
