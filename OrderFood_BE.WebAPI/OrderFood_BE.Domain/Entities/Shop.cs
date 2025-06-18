@@ -1,0 +1,24 @@
+﻿using OrderFood_BE.Domain.Base;
+
+namespace OrderFood_BE.Domain.Entities
+{
+    public class Shop : BaseEntity<Guid>
+    {
+        public string Name { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+        public TimeSpan OpenHours { get; set; }
+        public TimeSpan EndHours { get; set; }
+        public double Rating { get; set; }
+
+        public Guid OwnerId { get; set; }
+        public User Owner { get; set; }
+
+        public ICollection<MenuItem> MenuItems { get; set; }
+        public ICollection<ShopImage> ShopImages { get; set; }
+        public ICollection<Voucher> Vouchers { get; set; }
+        public ICollection<Order> Orders { get; set; }
+    }
+
+}

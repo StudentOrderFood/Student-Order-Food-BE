@@ -17,9 +17,15 @@ namespace OrderFood_BE.Domain.Entities
         public string Avatar { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public DateTime Dob { get; set; }
+        public bool IsActive { get; set; } = true;
 
         // Navigation properties
         public Guid RoleId { get; set; }
         public Role Role { get; set; }
+
+        public ICollection<Shop> Shops { get; set; }
+        public ICollection<Order> Orders { get; set; }
+        public ICollection<Feedback> Feedbacks { get; set; }
+        public ICollection<HistoryTransaction> HistoryTransactions { get; set; }
     }
 }
