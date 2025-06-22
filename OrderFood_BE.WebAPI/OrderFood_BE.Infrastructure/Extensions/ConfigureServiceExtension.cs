@@ -18,6 +18,7 @@ namespace OrderFood_BE.Infrastructure.Extensions
             _ = services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
             _ = services.AddScoped<IUserRepository, UserRepository>();
             _ = services.AddScoped<IRoleRepository, RoleRepository>();
+            _ = services.AddScoped<IShopRepository, ShopRepository>();
 
             _ = services.AddScoped<IJwtService, JwtService>();
             return services;
