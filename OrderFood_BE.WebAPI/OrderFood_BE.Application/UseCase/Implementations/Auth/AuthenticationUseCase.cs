@@ -1,13 +1,11 @@
 ﻿using FirebaseAdmin;
 using FirebaseAdmin.Auth;
-using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using OrderFood_BE.Application.Models.Requests.Auth;
 using OrderFood_BE.Application.Models.Response.Auth;
 using OrderFood_BE.Application.Repositories;
 using OrderFood_BE.Application.Services;
 using OrderFood_BE.Application.UseCase.Interfaces.Auth;
-using OrderFood_BE.Domain.Entities;
 using OrderFood_BE.Shared.Enums;
 
 namespace OrderFood_BE.Application.UseCase.Implementations.Auth
@@ -57,7 +55,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             }
             //Ngược lại
             // Lấy thông tin người dùng từ DB bằng UserId
-            var user = await _userRepository.GetByIdAsync(request.UserId);
+            var user = await _userRepository.GetUserByIdAsync(request.UserId);
             if (user == null)
             {
                 Console.WriteLine("User not found");
@@ -75,12 +73,70 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             // Trả về TokenResponse chứa access token, refresh token, userId và userRole
             return responseToken;
         }
+        public async Task<TokenResponse> LoginAsync(LoginRequest request)
+        {
+            var user = await _userRepository.GetUserByEmailPhoneOrUserName(request.Identifier);
+            if (user == null)
+            {
+                return new TokenResponse { };
+            }
+            // Kiểm tra mật khẩu
+            var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+            if (!isPasswordValid)
+            {
+                return new TokenResponse { };
+            }
+            // Tạo JWT
+            var tokenReponse = new TokenResponse
+            {
+                AccessToken = _jwtService.GenerateAccessToken(),
+                RefreshToken = await _jwtService.GenerateRefreshTokenAsync(user.Id),
+                UserId = user.Id.ToString(),
+                UserRole = user.Role.Name,
+            };
+            return tokenReponse;
+        }
+        public async Task<string> RegisterShopOwnerAsync(RegisterRequest request)
+        {
+            var role = await _roleRepository.GetByNameAsync(RoleEnum.ShopOwner.ToString());
+            if (role == null)
+            {
+                return "Role does not exists.";
+            }
+            // Kiểm tra xem email or username or phone người dùng đã tồn tại trong DB chưa
+            var userExists = await _userRepository.ExistsAsync(request.Email) || await _userRepository.ExistsAsync(request.UserName) || await _userRepository.ExistsAsync(request.Phone);
+            if (userExists)
+            {
+                return "UserName or Email or Phone already exists.";
+            }
+            // Kiểm tra confirm password
+            if (request.Password != request.ConfirmPassword)
+            {
+                return "Confirm password does not match.";
+            }
+            // Mã hóa mật khẩu
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            // Tạo người dùng mới
+            var user = new Domain.Entities.User
+            {
+                Id = Guid.NewGuid(),
+                Email = request.Email,
+                FullName = request.FullName,
+                UserName = request.UserName,
+                Password = hashedPassword,
+                Phone = request.Phone,
+                Address = request.Address,
+                Avatar = request.Avatar ?? "",
+                RoleId = role.Id,
+                Dob = request.Dob
+            };
 
-        /// <summary>
-        /// Authenticates a student using a Firebase ID token. If the user does not exist, creates a new user.
-        /// </summary>
-        /// <param name="idToken">The Firebase ID token.</param>
-        /// <returns>A <see cref="TokenResponse"/> containing access and refresh tokens, user ID, and role.</returns>
+            // Lưu người dùng vào DB
+            await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
+            // return success message
+            return "Register account successfully.";
+        }
         public async Task<TokenResponse> StudentLoginAsync(IdTokenRequest request)
         {
             try
@@ -105,7 +161,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                     var existingUser = await _userRepository.GetByEmailAsync(user.Email);
                     // Tạo JWT
                     var accessToken = _jwtService.GenerateAccessToken();
-                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync(existingUser.Id);            
+                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync(existingUser.Id);
                     return new TokenResponse
                     {
                         AccessToken = accessToken,
@@ -124,7 +180,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                         Console.WriteLine("Cannot find role Student");
                         return new TokenResponse();
                     }
-                    var User = new User
+                    var User = new Domain.Entities.User
                     {
                         Id = Guid.NewGuid(),
                         Email = user.Email,

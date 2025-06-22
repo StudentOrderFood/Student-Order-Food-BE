@@ -11,5 +11,9 @@ namespace OrderFood_BE.Application.Repositories
     {
         Task<User?> GetByEmailAsync(string email);
         Task<bool> ExistsByEmailAsync(string email);
+        Task<bool> ExistsAsync(string value);
+        Task<User?> GetUserByEmailPhoneOrUserName(string val);
+        Task<User?> GetUserByIdAsync(Guid userId);
+        Task<IEnumerable<User>?> GetAllUserAsync();
     }
 }
