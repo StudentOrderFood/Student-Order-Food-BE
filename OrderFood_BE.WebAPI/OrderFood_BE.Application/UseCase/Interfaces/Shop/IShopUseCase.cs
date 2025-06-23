@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OrderFood_BE.Application.Models.Requests.Shop;
+using OrderFood_BE.Application.Models.Response.Shop;
+using OrderFood_BE.Shared.Common;
 
 namespace OrderFood_BE.Application.UseCase.Interfaces.Shop
 {
@@ -19,5 +21,7 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Shop
         /// - "The request has been submitted and is awaiting approval." if the shop creation request is successful.
         /// </returns>
         Task<string> CreateShopAsync(CreateShopRequest request);
+        Task<string> ApproveOrRejectShopAsync(ApproveShopRequest request);
+        Task<PagingResponse<GetShopResponse>> GetShopsByStatusAsync(string status, PagingRequest request);
     }
 }
