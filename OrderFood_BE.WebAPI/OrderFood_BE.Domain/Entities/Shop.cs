@@ -7,7 +7,7 @@ namespace OrderFood_BE.Domain.Entities
         public string Name { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
+        public string Status { get; set; }
         public TimeSpan OpenHours { get; set; }
         public TimeSpan EndHours { get; set; }
         public double Rating { get; set; }
