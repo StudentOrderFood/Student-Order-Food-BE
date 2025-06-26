@@ -22,7 +22,7 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Auth
         /// </summary>
         /// <param name="request">The token request containing the user ID and refresh token.</param>
         /// <returns>A <see cref="TokenResponse"/> containing a new access token, the same refresh token, user ID, and user role.</returns>
-        Task<TokenResponse> GetNewAccessToken(TokenRequest request);
+        Task<ApiResponse<TokenResponse>> GetNewAccessToken(TokenRequest request);
         /// <summary>
         /// Registers a new shop owner account in the system.
         /// </summary>
@@ -36,7 +36,7 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Auth
         /// <item><description>"Confirm password does not match." if the password and confirm password do not match.</description></item>
         /// </list>
         /// </returns>
-        Task<string> RegisterShopOwnerAsync(RegisterRequest request);
+        Task<ApiResponse<string>> RegisterShopOwnerAsync(RegisterRequest request);
         /// <summary>
         /// Authenticates a user using their identifier (email, phone, or username) and password.
         /// </summary>
@@ -45,6 +45,6 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Auth
         /// A <see cref="TokenResponse"/> containing access and refresh tokens, user ID, and user role if authentication is successful;
         /// otherwise, an empty <see cref="TokenResponse"/> if authentication fails.
         /// </returns>
-        Task<TokenResponse> LoginAsync(LoginRequest request);
+        Task<ApiResponse<TokenResponse>> LoginAsync(LoginRequest request);
     }
 }
