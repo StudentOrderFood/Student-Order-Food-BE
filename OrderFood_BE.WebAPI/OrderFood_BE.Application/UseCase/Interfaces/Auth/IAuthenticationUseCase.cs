@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OrderFood_BE.Application.Models.Requests.Auth;
 using OrderFood_BE.Application.Models.Response.Auth;
+using OrderFood_BE.Shared.Common;
 
 namespace OrderFood_BE.Application.UseCase.Interfaces.Auth
 {
@@ -15,7 +16,7 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Auth
         /// </summary>
         /// <param name="idToken">The Firebase ID token.</param>
         /// <returns>A <see cref="TokenResponse"/> containing access and refresh tokens, user ID, and role.</returns>
-        Task<TokenResponse> StudentLoginAsync(IdTokenRequest request);
+        Task<ApiResponse<TokenResponse>> StudentLoginAsync(IdTokenRequest request);
         /// <summary>
         /// Retrieves a new access token using a valid refresh token and user ID.
         /// </summary>

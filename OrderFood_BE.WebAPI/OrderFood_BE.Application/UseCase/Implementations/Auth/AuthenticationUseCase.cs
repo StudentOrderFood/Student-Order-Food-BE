@@ -6,6 +6,7 @@ using OrderFood_BE.Application.Models.Response.Auth;
 using OrderFood_BE.Application.Repositories;
 using OrderFood_BE.Application.Services;
 using OrderFood_BE.Application.UseCase.Interfaces.Auth;
+using OrderFood_BE.Shared.Common;
 using OrderFood_BE.Shared.Enums;
 
 namespace OrderFood_BE.Application.UseCase.Implementations.Auth
@@ -138,7 +139,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             // return success message
             return "Register account successfully.";
         }
-        public async Task<TokenResponse> StudentLoginAsync(IdTokenRequest request)
+        public async Task<ApiResponse<TokenResponse>> StudentLoginAsync(IdTokenRequest request)
         {
             try
             {
@@ -150,6 +151,16 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                 var uid = decodedToken.Uid;
                 //lấy thông tin user từ Firebase bằng UID
                 var user = await auth.GetUserAsync(uid);
+                if (string.IsNullOrEmpty(user.Email) || !user.Email.EndsWith(".edu.vn", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Email is not a valid student email
+                    return new ApiResponse<TokenResponse>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "Email must end with .edu.vn"
+                    };
+                }
                 /**
                  * Kiểm tra xem người dùng có tồn tại trong DB không?
                  * Nếu chưa, Tạo mới vào DB và return về user
@@ -163,12 +174,18 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                     // Tạo JWT
                     var accessToken = _jwtService.GenerateAccessToken(existingUser.Role.Name);
                     var refreshToken = await _jwtService.GenerateRefreshTokenAsync(existingUser.Id);
-                    return new TokenResponse
+                    var respose =  new TokenResponse
                     {
                         AccessToken = accessToken,
                         RefreshToken = refreshToken,
                         UserId = existingUser.Id.ToString(),
                         UserRole = existingUser.Role.Name,
+                    };
+                    return new ApiResponse<TokenResponse>
+                    {
+                        Data = respose,
+                        Success = true,
+                        Message = "Login successfully"
                     };
 
                 }
@@ -178,8 +195,12 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                     var role = await _roleRepository.GetByNameAsync(RoleEnum.Student.ToString());
                     if (role == null)
                     {
-                        Console.WriteLine("Cannot find role Student");
-                        return new TokenResponse();
+                        return new ApiResponse<TokenResponse>
+                        {
+                            Data = null,
+                            Success = false,
+                            Message = "Role not valid"
+                        };
                     }
                     var User = new Domain.Entities.User
                     {
@@ -196,12 +217,18 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                     // Tạo JWT
                     var accessToken = _jwtService.GenerateAccessToken(role.Name);
                     var refreshToken = await _jwtService.GenerateRefreshTokenAsync(User.Id);
-                    return new TokenResponse
+                    var repsponse =  new TokenResponse
                     {
                         AccessToken = accessToken,
                         RefreshToken = refreshToken,
                         UserId = User.Id.ToString(),
                         UserRole = User.Role.Name,
+                    };
+                    return new ApiResponse<TokenResponse>
+                    {
+                        Data = repsponse,
+                        Success = true,
+                        Message = "Login successfully"
                     };
                 }
             }
@@ -209,12 +236,23 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             {
                 // Xử lý lỗi nếu có
                 Console.WriteLine($"FirebaseAuthException: {ex.Message}");
-                return new TokenResponse();
+                //return new TokenResponse();
+                return new ApiResponse<TokenResponse>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "Firebase Authentication Exception"
+                };
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"General Exception: {ex.Message}");
-                return new TokenResponse();
+                return new ApiResponse<TokenResponse>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "Unknown exception"
+                };
             }
         }
     }
