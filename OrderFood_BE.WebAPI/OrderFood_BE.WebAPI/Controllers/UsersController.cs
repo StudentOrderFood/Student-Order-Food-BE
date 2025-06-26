@@ -19,6 +19,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("{userId}")]
+        [Authorize(Roles = "Admin,ShopOwner,Student")]
         public async Task<IActionResult> GetByIdAsync(Guid userId)
         {
             var user = await _userUseCase.GetByIdAsync(userId);

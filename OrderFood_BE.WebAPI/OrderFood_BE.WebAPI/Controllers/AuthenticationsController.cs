@@ -55,7 +55,11 @@ namespace OrderFood_BE.WebAPI.Controllers
             {
                 return BadRequest("Registration failed.");
             }
-            return Ok("Shop owner registered successfully.");
+            if (response == "UserName or Email or Phone already exists.")
+            {
+                return BadRequest(response);
+            }
+            return Ok(response);
         }
     }
 }

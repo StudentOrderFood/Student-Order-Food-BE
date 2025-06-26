@@ -64,7 +64,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             // Tạo một access token mới
             var responseToken = new TokenResponse
             {
-                AccessToken = _jwtService.GenerateAccessToken(),
+                AccessToken = _jwtService.GenerateAccessToken(user.Role.Name),
                 RefreshToken = request.RefreshToken,
                 UserId = user.Id.ToString(),
                 UserRole = user.Role.Name
@@ -89,7 +89,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             // Tạo JWT
             var tokenReponse = new TokenResponse
             {
-                AccessToken = _jwtService.GenerateAccessToken(),
+                AccessToken = _jwtService.GenerateAccessToken(user.Role.Name),
                 RefreshToken = await _jwtService.GenerateRefreshTokenAsync(user.Id),
                 UserId = user.Id.ToString(),
                 UserRole = user.Role.Name,
@@ -128,7 +128,8 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                 Address = request.Address,
                 Avatar = request.Avatar ?? "",
                 RoleId = role.Id,
-                Dob = request.Dob
+                Dob = request.Dob,
+                IsActive = false,
             };
 
             // Lưu người dùng vào DB
@@ -160,7 +161,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                     // Lấy thông tin người dùng từ DB
                     var existingUser = await _userRepository.GetByEmailAsync(user.Email);
                     // Tạo JWT
-                    var accessToken = _jwtService.GenerateAccessToken();
+                    var accessToken = _jwtService.GenerateAccessToken(existingUser.Role.Name);
                     var refreshToken = await _jwtService.GenerateRefreshTokenAsync(existingUser.Id);
                     return new TokenResponse
                     {
@@ -193,7 +194,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                     await _userRepository.AddAsync(User);
                     await _userRepository.SaveChangesAsync();
                     // Tạo JWT
-                    var accessToken = _jwtService.GenerateAccessToken();
+                    var accessToken = _jwtService.GenerateAccessToken(role.Name);
                     var refreshToken = await _jwtService.GenerateRefreshTokenAsync(User.Id);
                     return new TokenResponse
                     {

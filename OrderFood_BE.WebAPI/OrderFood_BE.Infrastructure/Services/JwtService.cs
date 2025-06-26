@@ -25,9 +25,12 @@ namespace OrderFood_BE.Infrastructure.Services
             _jwtSettings = jwtSettings.Value;
             _repository = repository;
         }
-        public string GenerateAccessToken()
+        public string GenerateAccessToken(string role)
         {
-            var claims = new Claim[] { };
+            var claims = new Claim[]
+            {
+                new(ClaimTypes.Role, role)
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
