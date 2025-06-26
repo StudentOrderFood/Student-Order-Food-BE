@@ -20,8 +20,8 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Shop
         /// - "User is not authorized to create a shop." if the user is not a shop owner.
         /// - "The request has been submitted and is awaiting approval." if the shop creation request is successful.
         /// </returns>
-        Task<string> CreateShopAsync(CreateShopRequest request);
-        Task<string> ApproveOrRejectShopAsync(ApproveShopRequest request);
-        Task<PagingResponse<GetShopResponse>> GetShopsByStatusAsync(string status, PagingRequest request);
+        Task<ApiResponse<GetShopResponse>> CreateShopAsync(CreateShopRequest request);
+        Task<ApiResponse<string>> ApproveOrRejectShopAsync(ApproveShopRequest request);
+        Task<ApiResponse<PagingResponse<GetShopResponse>>> GetShopsByStatusAsync(string status, PagingRequest request);
     }
 }
