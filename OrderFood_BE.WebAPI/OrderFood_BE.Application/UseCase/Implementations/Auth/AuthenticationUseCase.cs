@@ -44,23 +44,23 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
         /// A <see cref="TokenResponse"/> containing a new access token, the same refresh token, user ID, and user role.
         /// Returns an empty <see cref="TokenResponse"/> if the refresh token is invalid or the user is not found.
         /// </returns>
-        public async Task<TokenResponse> GetNewAccessToken(TokenRequest request)
+        public async Task<ApiResponse<TokenResponse>> GetNewAccessToken(TokenRequest request)
         {
             // Validate the refresh token and user ID
             var isValid = await _jwtService.ValidateRefreshTokenAsync(request.UserId, request.RefreshToken);
-            // Nếu invalid return TokenResponse rỗng
+            // Không có refreshToken hoặc refreshToken hết hạn
             if (!isValid)
             {
-                Console.WriteLine("Invalid refresh token");
-                return new TokenResponse();
+                //Console.WriteLine("Invalid refresh token");
+                return ApiResponse<TokenResponse>.Fail("Invalid refresh token");
             }
             //Ngược lại
             // Lấy thông tin người dùng từ DB bằng UserId
             var user = await _userRepository.GetUserByIdAsync(request.UserId);
             if (user == null)
             {
-                Console.WriteLine("User not found");
-                return new TokenResponse();
+                //Console.WriteLine("User not found");
+                return ApiResponse<TokenResponse>.Fail("User not found");
             }
             // Tạo một access token mới
             var responseToken = new TokenResponse
@@ -70,22 +70,27 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                 UserId = user.Id.ToString(),
                 UserRole = user.Role.Name
             };
-
-            // Trả về TokenResponse chứa access token, refresh token, userId và userRole
-            return responseToken;
+            return ApiResponse<TokenResponse>.Ok(responseToken, "Refresh successfully");
         }
-        public async Task<TokenResponse> LoginAsync(LoginRequest request)
+        public async Task<ApiResponse<TokenResponse>> LoginAsync(LoginRequest request)
         {
             var user = await _userRepository.GetUserByEmailPhoneOrUserName(request.Identifier);
             if (user == null)
             {
-                return new TokenResponse { };
+                //return new TokenResponse { };
+                return ApiResponse<TokenResponse>.Fail("Invalid identifier or passwords");
             }
             // Kiểm tra mật khẩu
             var isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
             if (!isPasswordValid)
             {
-                return new TokenResponse { };
+                //return new TokenResponse { };
+                return ApiResponse<TokenResponse>.Fail("Invalid identifire or passwords");
+            }
+
+            if (user.IsActive == false )
+            {
+                return ApiResponse<TokenResponse>.Fail("Need to wait for admin to approve");
             }
             // Tạo JWT
             var tokenReponse = new TokenResponse
@@ -95,25 +100,29 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                 UserId = user.Id.ToString(),
                 UserRole = user.Role.Name,
             };
-            return tokenReponse;
+            //return tokenReponse;
+            return ApiResponse<TokenResponse>.Ok(tokenReponse, "Login Succesfully");
         }
-        public async Task<string> RegisterShopOwnerAsync(RegisterRequest request)
+        public async Task<ApiResponse<string>> RegisterShopOwnerAsync(RegisterRequest request)
         {
             var role = await _roleRepository.GetByNameAsync(RoleEnum.ShopOwner.ToString());
             if (role == null)
             {
-                return "Role does not exists.";
+                //return "Role does not exists.";
+                return ApiResponse<string>.Fail("Role does not exists.");
             }
             // Kiểm tra xem email or username or phone người dùng đã tồn tại trong DB chưa
             var userExists = await _userRepository.ExistsAsync(request.Email) || await _userRepository.ExistsAsync(request.UserName) || await _userRepository.ExistsAsync(request.Phone);
             if (userExists)
             {
-                return "UserName or Email or Phone already exists.";
+                //return "UserName or Email or Phone already exists.";
+                return ApiResponse<string>.Fail("UserName or Email or Phone already exists.");
             }
             // Kiểm tra confirm password
             if (request.Password != request.ConfirmPassword)
             {
-                return "Confirm password does not match.";
+                //return "Confirm password does not match.";
+                return ApiResponse<string>.Fail("Confirm password does not match.");
             }
             // Mã hóa mật khẩu
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -137,7 +146,8 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
             // return success message
-            return "Register account successfully.";
+            //return "Register account successfully.";
+            return ApiResponse<string>.Ok("Register account successfully.", "Register account successfully.");
         }
         public async Task<ApiResponse<TokenResponse>> StudentLoginAsync(IdTokenRequest request)
         {
@@ -210,6 +220,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                         Phone = user.PhoneNumber ?? "",
                         RoleId = role.Id,
                         Avatar = user.PhotoUrl,
+                        IsActive = true
                     };
                     // Lưu người dùng vào DB
                     await _userRepository.AddAsync(User);
