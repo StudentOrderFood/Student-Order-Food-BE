@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OrderFood_BE.Application.Models.Response.User;
+using OrderFood_BE.Shared.Common;
 
 namespace OrderFood_BE.Application.UseCase.Interfaces.User
 {
@@ -16,14 +17,14 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.User
         /// <returns>
         /// A <see cref="GetUserResponse"/> representing the user if found and active; otherwise, <c>null</c>.
         /// </returns>
-        Task<GetUserResponse?> GetByIdAsync(Guid userId);
+        Task<ApiResponse<GetUserResponse>> GetByIdAsync(Guid userId);
         /// <summary>
         /// Retrieves all active and non-deleted users from the repository.
         /// </summary>
         /// <returns>
         /// A list of <see cref="GetUserResponse"/> representing the users, or <c>null</c> if no users are found.
         /// </returns>
-        Task<List<GetUserResponse>?> GetAllAsync();
+        Task<ApiResponse<List<GetUserResponse>>> GetAllAsync();
         /// <summary>
         /// Retrieves all users with the role of ShopOwner from the repository.
         /// </summary>
@@ -35,7 +36,7 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.User
         /// <returns>
         /// A list of <see cref="GetUserResponse"/> representing ShopOwner users, or <c>null</c> if none exist.
         /// </returns>
-        Task<List<GetUserResponse>?> GetAllShopOwnerAsync();
+        Task<ApiResponse<List<GetUserResponse>>> GetAllShopOwnerAsync();
         /// <summary>
         /// Retrieves all users with the role of Student from the repository.
         /// </summary>
@@ -47,6 +48,6 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.User
         /// <returns>
         /// A list of <see cref="GetUserResponse"/> representing Student users, or <c>null</c> if none exist.
         /// </returns>
-        Task<List<GetUserResponse>?> GetAllStudentAsync();
+        Task<ApiResponse<List<GetUserResponse>>> GetAllStudentAsync();
     }
 }

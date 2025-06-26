@@ -19,13 +19,15 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
             _shopRepository = shopRepository;
             _userRepository = userRepository;
         }
-        public async Task<string> CreateShopAsync(CreateShopRequest request)
+        public async Task<ApiResponse<GetShopResponse>> CreateShopAsync(CreateShopRequest request)
         {
             var user = await _userRepository.GetByIdAsync(request.OwnerId);
+
             if (user == null || user.Role.Name != RoleEnum.ShopOwner.ToString())
             {
-                return "User is not authorized to create a shop.";
+                return ApiResponse<GetShopResponse>.Fail("User is not authorized to create a shop.");
             }
+
             var shop = new Domain.Entities.Shop
             {
                 Name = request.Name,
@@ -40,17 +42,45 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
 
             await _shopRepository.AddAsync(shop);
             await _shopRepository.SaveChangesAsync();
-            return "The request has been submitted and is awaiting approval.";
+
+            var shopResponse = new GetShopResponse
+            {
+                Id = shop.Id,
+                Name = shop.Name,
+                ImageUrl = shop.ImageUrl,
+                Address = shop.Address,
+                Status = shop.Status,
+                OpenHours = shop.OpenHours,
+                EndHours = shop.EndHours,
+                Rating = shop.Rating,
+                OwnerId = shop.OwnerId,
+                Owner = new GetUserResponse
+                {
+                    UserId = user.Id,
+                    FullName = user.FullName,
+                    UserName = user.UserName,
+                    Phone = user.Phone,
+                    Address = user.Address,
+                    Avatar = user.Avatar,
+                    Email = user.Email,
+                    Dob = user.Dob,
+                    RoleId = user.RoleId,
+                    RoleName = user.Role?.Name ?? string.Empty
+                }
+            };
+
+            return ApiResponse<GetShopResponse>.Ok(shopResponse, "The request has been submitted and is awaiting approval.");
         }
 
-        public async Task<string> ApproveOrRejectShopAsync(ApproveShopRequest request)
+        public async Task<ApiResponse<string>> ApproveOrRejectShopAsync(ApproveShopRequest request)
         {
             var shop = await _shopRepository.GetShopByIdAsync(request.ShopId);
+
             if (shop == null)
-                return "Shop not found.";
+                return ApiResponse<string>.Fail("Shop not found.");
 
             if (shop.Status != ShopEnumStatus.Pending.ToString())
-                return "This shop has already been processed.";
+                return ApiResponse<string>.Fail("This shop has already been processed.");
 
             shop.Status = request.IsApproved
                 ? ShopEnumStatus.Approved.ToString()
@@ -59,10 +89,14 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
             await _shopRepository.UpdateAsync(shop);
             await _shopRepository.SaveChangesAsync();
 
-            return request.IsApproved ? "Shop approved successfully." : "Shop has been rejected.";
+            var message = request.IsApproved
+                ? "Shop approved successfully."
+                : "Shop has been rejected.";
+
+            return ApiResponse<string>.Ok(message, message);
         }
 
-        public async Task<PagingResponse<GetShopResponse>> GetShopsByStatusAsync(string status, PagingRequest request)
+        public async Task<ApiResponse<PagingResponse<GetShopResponse>>> GetShopsByStatusAsync(string status, PagingRequest request)
         {
             var totalCount = await _shopRepository.CountAsync(s => !s.IsDeleted && s.Status == status);
 
@@ -102,13 +136,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
 
             if (!shopResponses.Any())
             {
-                return new PagingResponse<GetShopResponse>
-                {
-                    Items = new List<GetShopResponse>(),
-                    TotalItems = 0,
-                    PageIndex = request.PageIndex,
-                    PageSize = request.PageSize
-                };
+                return ApiResponse<PagingResponse<GetShopResponse>>.Fail("Không tìm thấy cửa hàng nào.");
             }
 
             var pagingResponse = new PagingResponse<GetShopResponse>
@@ -119,7 +147,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                 PageSize = request.PageSize
             };
 
-            return pagingResponse;
+            return ApiResponse<PagingResponse<GetShopResponse>>.Ok(pagingResponse, "Lấy danh sách cửa hàng thành công.");
         }
     }
 }
