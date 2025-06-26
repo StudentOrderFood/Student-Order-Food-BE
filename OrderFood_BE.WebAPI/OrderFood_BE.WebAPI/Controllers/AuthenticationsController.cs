@@ -29,10 +29,10 @@ namespace OrderFood_BE.WebAPI.Controllers
         public async Task<IActionResult> StudentLogin([FromBody] IdTokenRequest request)
         {
             var response = await _authenticationUseCase.StudentLoginAsync(request);
-            if (response == null || string.IsNullOrEmpty(response.AccessToken))
-            {
-                return BadRequest("Invalid email");
-            }
+            //if (response == null || string.IsNullOrEmpty(response.AccessToken))
+            //{
+            //    return BadRequest("Invalid email");
+            //}
             return Ok(response);
         }
 
