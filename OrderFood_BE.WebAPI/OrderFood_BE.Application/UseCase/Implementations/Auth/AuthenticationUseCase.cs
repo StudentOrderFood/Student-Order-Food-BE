@@ -1,4 +1,5 @@
-﻿using FirebaseAdmin;
+﻿using System.Text.Json;
+using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
 using OrderFood_BE.Application.Models.Requests.Auth;
@@ -13,24 +14,24 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
 {
     public class AuthenticationUseCase : IAuthenticationUseCase
     {
-        private readonly FirebaseApp _firebaseApp;
+        //private readonly FirebaseApp _firebaseApp;
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;
         private readonly IRoleRepository _roleRepository;
         public AuthenticationUseCase(IUserRepository userRepository, IJwtService jwtService, IRoleRepository roleRepository)
         {
-            // Initialize FirebaseApp if it is not already initialized
-            if (FirebaseApp.DefaultInstance == null)
-            {
-                _firebaseApp = FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromFile("D:\\student-order-food-firebase-adminsdk-fbsvc-e0b64bf4df.json")
-                });
-            }
-            else
-            {
-                _firebaseApp = FirebaseApp.DefaultInstance;
-            }
+            //// Initialize FirebaseApp if it is not already initialized
+            //if (FirebaseApp.DefaultInstance == null)
+            //{
+            //    _firebaseApp = FirebaseApp.Create(new AppOptions()
+            //    {
+            //        Credential = GoogleCredential.FromFile("D:\\student-order-food-firebase-adminsdk-fbsvc-e0b64bf4df.json")
+            //    });
+            //}
+            //else
+            //{
+            //    _firebaseApp = FirebaseApp.DefaultInstance;
+            //}
             _userRepository = userRepository;
             _jwtService = jwtService;
             _roleRepository = roleRepository;
@@ -149,57 +150,176 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             //return "Register account successfully.";
             return ApiResponse<string>.Ok("Register account successfully.", "Register account successfully.");
         }
+        //public async Task<ApiResponse<TokenResponse>> StudentLoginAsync(IdTokenRequest request)
+        //{
+        //    try
+        //    {
+        //        // Lấy FirebaseAuth từ FirebaseApp
+        //        var auth = FirebaseAuth.GetAuth(_firebaseApp);
+
+        //        // Xác thực ID token và uid
+        //        var decodedToken = await auth.VerifyIdTokenAsync(request.IdToken);
+        //        var uid = decodedToken.Uid;
+        //        //lấy thông tin user từ Firebase bằng UID
+        //        var user = await auth.GetUserAsync(uid);
+        //        if (string.IsNullOrEmpty(user.Email) || !user.Email.EndsWith(".edu.vn", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            // Email is not a valid student email
+        //            return new ApiResponse<TokenResponse>
+        //            {
+        //                Data = null,
+        //                Success = false,
+        //                Message = "Email must end with .edu.vn"
+        //            };
+        //        }
+        //        /**
+        //         * Kiểm tra xem người dùng có tồn tại trong DB không?
+        //         * Nếu chưa, Tạo mới vào DB và return về user
+        //         * Nếu rồi, return về user đã có trong DB
+        //         */
+        //        // Case 1: Người dùng đã tồn tại trong DB => Trả về TokenReponse chứa thông tin người dùng
+        //        if (await _userRepository.ExistsByEmailAsync(user.Email))
+        //        {
+        //            // Lấy thông tin người dùng từ DB
+        //            var existingUser = await _userRepository.GetByEmailAsync(user.Email);
+        //            // Tạo JWT
+        //            var accessToken = _jwtService.GenerateAccessToken(existingUser.Role.Name);
+        //            var refreshToken = await _jwtService.GenerateRefreshTokenAsync(existingUser.Id);
+        //            var respose =  new TokenResponse
+        //            {
+        //                AccessToken = accessToken,
+        //                RefreshToken = refreshToken,
+        //                UserId = existingUser.Id.ToString(),
+        //                UserRole = existingUser.Role.Name,
+        //            };
+        //            return new ApiResponse<TokenResponse>
+        //            {
+        //                Data = respose,
+        //                Success = true,
+        //                Message = "Login successfully"
+        //            };
+
+        //        }
+        //        // Case 2: Người dùng chưa tồn tại trong DB => Tạo mới vào DB và trả về TokenResponse
+        //        else
+        //        {
+        //            var role = await _roleRepository.GetByNameAsync(RoleEnum.Student.ToString());
+        //            if (role == null)
+        //            {
+        //                return new ApiResponse<TokenResponse>
+        //                {
+        //                    Data = null,
+        //                    Success = false,
+        //                    Message = "Role not valid"
+        //                };
+        //            }
+        //            var User = new Domain.Entities.User
+        //            {
+        //                Id = Guid.NewGuid(),
+        //                Email = user.Email,
+        //                FullName = user.DisplayName,
+        //                Phone = user.PhoneNumber ?? "",
+        //                RoleId = role.Id,
+        //                Avatar = user.PhotoUrl,
+        //                IsActive = true
+        //            };
+        //            // Lưu người dùng vào DB
+        //            await _userRepository.AddAsync(User);
+        //            await _userRepository.SaveChangesAsync();
+        //            // Tạo JWT
+        //            var accessToken = _jwtService.GenerateAccessToken(role.Name);
+        //            var refreshToken = await _jwtService.GenerateRefreshTokenAsync(User.Id);
+        //            var repsponse =  new TokenResponse
+        //            {
+        //                AccessToken = accessToken,
+        //                RefreshToken = refreshToken,
+        //                UserId = User.Id.ToString(),
+        //                UserRole = User.Role.Name,
+        //            };
+        //            return new ApiResponse<TokenResponse>
+        //            {
+        //                Data = repsponse,
+        //                Success = true,
+        //                Message = "Login successfully"
+        //            };
+        //        }
+        //    }
+        //    catch (FirebaseAuthException ex)
+        //    {
+        //        // Xử lý lỗi nếu có
+        //        Console.WriteLine($"FirebaseAuthException: {ex.Message}");
+        //        //return new TokenResponse();
+        //        return new ApiResponse<TokenResponse>
+        //        {
+        //            Data = null,
+        //            Success = false,
+        //            Message = "Firebase Authentication Exception"
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"General Exception: {ex.Message}");
+        //        return new ApiResponse<TokenResponse>
+        //        {
+        //            Data = null,
+        //            Success = false,
+        //            Message = "Unknown exception"
+        //        };
+        //    }
+        //}
+
         public async Task<ApiResponse<TokenResponse>> StudentLoginAsync(IdTokenRequest request)
         {
             try
             {
-                // Lấy FirebaseAuth từ FirebaseApp
-                var auth = FirebaseAuth.GetAuth(_firebaseApp);
+                using var httpClient = new HttpClient();
+                var response = await httpClient.GetAsync($"https://oauth2.googleapis.com/tokeninfo?id_token={request.IdToken}");
 
-                // Xác thực ID token và uid
-                var decodedToken = await auth.VerifyIdTokenAsync(request.IdToken);
-                var uid = decodedToken.Uid;
-                //lấy thông tin user từ Firebase bằng UID
-                var user = await auth.GetUserAsync(uid);
-                if (string.IsNullOrEmpty(user.Email) || !user.Email.EndsWith(".edu.vn", StringComparison.OrdinalIgnoreCase))
+                if (!response.IsSuccessStatusCode)
                 {
-                    // Email is not a valid student email
                     return new ApiResponse<TokenResponse>
                     {
                         Data = null,
                         Success = false,
-                        Message = "Email must end with .edu.vn"
+                        Message = "Invalid Google ID Token"
                     };
                 }
-                /**
-                 * Kiểm tra xem người dùng có tồn tại trong DB không?
-                 * Nếu chưa, Tạo mới vào DB và return về user
-                 * Nếu rồi, return về user đã có trong DB
-                 */
-                // Case 1: Người dùng đã tồn tại trong DB => Trả về TokenReponse chứa thông tin người dùng
-                if (await _userRepository.ExistsByEmailAsync(user.Email))
+
+                var content = await response.Content.ReadAsStringAsync();
+                var tokenInfo = JsonSerializer.Deserialize<GoogleTokenInfo>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (tokenInfo == null || tokenInfo.EmailVerified != "true" || !tokenInfo.Email.EndsWith(".edu.vn", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Lấy thông tin người dùng từ DB
-                    var existingUser = await _userRepository.GetByEmailAsync(user.Email);
-                    // Tạo JWT
-                    var accessToken = _jwtService.GenerateAccessToken(existingUser.Role.Name);
-                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync(existingUser.Id);
-                    var respose =  new TokenResponse
-                    {
-                        AccessToken = accessToken,
-                        RefreshToken = refreshToken,
-                        UserId = existingUser.Id.ToString(),
-                        UserRole = existingUser.Role.Name,
-                    };
                     return new ApiResponse<TokenResponse>
                     {
-                        Data = respose,
+                        Data = null,
+                        Success = false,
+                        Message = "Email must be verified and end with .edu.vn"
+                    };
+                }
+
+                var email = tokenInfo.Email;
+                var name = tokenInfo.Name;
+                var avatar = tokenInfo.Picture;
+
+                if (await _userRepository.ExistsByEmailAsync(email))
+                {
+                    var existingUser = await _userRepository.GetByEmailAsync(email);
+                    var accessToken = _jwtService.GenerateAccessToken(existingUser.Role.Name);
+                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync(existingUser.Id);
+                    return new ApiResponse<TokenResponse>
+                    {
+                        Data = new TokenResponse
+                        {
+                            AccessToken = accessToken,
+                            RefreshToken = refreshToken,
+                            UserId = existingUser.Id.ToString(),
+                            UserRole = existingUser.Role.Name
+                        },
                         Success = true,
                         Message = "Login successfully"
                     };
-
                 }
-                // Case 2: Người dùng chưa tồn tại trong DB => Tạo mới vào DB và trả về TokenResponse
                 else
                 {
                     var role = await _roleRepository.GetByNameAsync(RoleEnum.Student.ToString());
@@ -212,57 +332,43 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                             Message = "Role not valid"
                         };
                     }
-                    var User = new Domain.Entities.User
+                    var user = new Domain.Entities.User
                     {
                         Id = Guid.NewGuid(),
-                        Email = user.Email,
-                        FullName = user.DisplayName,
-                        Phone = user.PhoneNumber ?? "",
+                        Email = email,
+                        FullName = name,
+                        Phone = string.Empty,
                         RoleId = role.Id,
-                        Avatar = user.PhotoUrl,
+                        Avatar = avatar,
                         IsActive = true
                     };
-                    // Lưu người dùng vào DB
-                    await _userRepository.AddAsync(User);
+                    await _userRepository.AddAsync(user);
                     await _userRepository.SaveChangesAsync();
-                    // Tạo JWT
+
                     var accessToken = _jwtService.GenerateAccessToken(role.Name);
-                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync(User.Id);
-                    var repsponse =  new TokenResponse
-                    {
-                        AccessToken = accessToken,
-                        RefreshToken = refreshToken,
-                        UserId = User.Id.ToString(),
-                        UserRole = User.Role.Name,
-                    };
+                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync(user.Id);
                     return new ApiResponse<TokenResponse>
                     {
-                        Data = repsponse,
+                        Data = new TokenResponse
+                        {
+                            AccessToken = accessToken,
+                            RefreshToken = refreshToken,
+                            UserId = user.Id.ToString(),
+                            UserRole = role.Name
+                        },
                         Success = true,
                         Message = "Login successfully"
                     };
                 }
             }
-            catch (FirebaseAuthException ex)
-            {
-                // Xử lý lỗi nếu có
-                Console.WriteLine($"FirebaseAuthException: {ex.Message}");
-                //return new TokenResponse();
-                return new ApiResponse<TokenResponse>
-                {
-                    Data = null,
-                    Success = false,
-                    Message = "Firebase Authentication Exception"
-                };
-            }
             catch (Exception ex)
             {
-                Console.WriteLine($"General Exception: {ex.Message}");
+                Console.WriteLine($"Exception: {ex.Message}");
                 return new ApiResponse<TokenResponse>
                 {
                     Data = null,
                     Success = false,
-                    Message = "Unknown exception"
+                    Message = "Login failed"
                 };
             }
         }
