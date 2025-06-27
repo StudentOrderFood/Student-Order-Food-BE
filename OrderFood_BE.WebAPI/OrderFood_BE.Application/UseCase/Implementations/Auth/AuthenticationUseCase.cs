@@ -140,7 +140,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                 Avatar = request.Avatar ?? "",
                 RoleId = role.Id,
                 Dob = request.Dob,
-                IsActive = false,
+                IsActive = true,
             };
 
             // Lưu người dùng vào DB
