@@ -274,6 +274,11 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                 return ApiResponse<GetShopResponse>.Fail("Không tìm thấy cửa hàng.");
             }
 
+            if (shop.OwnerId != request.OwnerId)
+            {
+                return ApiResponse<GetShopResponse>.Fail("Bạn không có quyền cập nhật cửa hàng này.");
+            }
+
             shop.Name = request.Name;
             shop.ImageUrl = request.ImageUrl;
             shop.Address = request.Address;
