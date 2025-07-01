@@ -11,6 +11,7 @@ namespace OrderFood_BE.Infrastructure.Persistence.Repositories
         {
             return await _context.Shops
                 .Include(s => s.Owner)
+                .Include(s => s.ShopImages)
                 .FirstOrDefaultAsync(s => s.Id == shopId && !s.IsDeleted);
         }
 
@@ -28,6 +29,11 @@ namespace OrderFood_BE.Infrastructure.Persistence.Repositories
                 .Where(s => s.Status == status && !s.IsDeleted)
                 .Include(s => s.Owner)
                 .ToListAsync();
+        }
+
+        public async Task AddShopImageAsync(ShopImage shopImage)
+        {
+            await _context.ShopImages.AddAsync(shopImage);
         }
     }
 }

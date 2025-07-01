@@ -23,5 +23,10 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Shop
         Task<ApiResponse<GetShopResponse>> CreateShopAsync(CreateShopRequest request);
         Task<ApiResponse<string>> ApproveOrRejectShopAsync(ApproveShopRequest request);
         Task<ApiResponse<PagingResponse<GetShopResponse>>> GetShopsByStatusAsync(string status, PagingRequest request);
+        Task<ApiResponse<GetShopResponse>> GetShopByIdAsync(Guid shopId);
+        Task<ApiResponse<PagingResponse<GetShopResponse>>> GetShopsByOwnerIdAsync(Guid ownerId, PagingRequest request);
+        Task<ApiResponse<GetShopResponse>> UpdateShopAsync(UpdateShopRequest request);
+        Task<ApiResponse<string>> DeleteShopAsync(Guid shopId);
+        Task<ApiResponse<string>> AddShopImageAsync(UpdateShopImageRequest request);
     }
 }
