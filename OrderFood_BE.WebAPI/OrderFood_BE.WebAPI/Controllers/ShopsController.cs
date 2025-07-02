@@ -12,7 +12,7 @@ namespace OrderFood_BE.WebAPI.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ShopsController : ControllerBase
     {
         private readonly IShopUseCase _shopUseCase;
@@ -30,12 +30,12 @@ namespace OrderFood_BE.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiResponse<GetShopResponse>), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateShopAsync(
             [FromForm] CreateShopRequest request,
-            IFormFile image,
+            IFormFile? image,
             List<IFormFile>? additionalImages)
         {
-            // Validate ảnh đại diện
-            if (image == null || image.Length == 0)
-                return BadRequest(ApiResponse<GetShopResponse>.Fail("Image file is required."));
+            //// Validate ảnh đại diện
+            //if (image == null || image.Length == 0)
+            //    return BadRequest(ApiResponse<GetShopResponse>.Fail("Image file is required."));
 
             try
             {
@@ -46,9 +46,12 @@ namespace OrderFood_BE.WebAPI.Controllers
 
                 request.OwnerId = Guid.Parse(ownerIdClaim);
 
-                // Upload ảnh đại diện
-                var imageUrl = await _cloudinaryService.UploadImageAsync(image, "shops");
-                request.ImageUrl = imageUrl;
+                if (image != null)
+                {
+                    // Upload ảnh đại diện
+                    var imageUrl = await _cloudinaryService.UploadImageAsync(image, "shops");
+                    request.ImageUrl = imageUrl;
+                }
 
                 // Tạo shop
                 var result = await _shopUseCase.CreateShopAsync(request);
@@ -100,7 +103,6 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("{shopId}")]
-        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<GetShopResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ApiResponse<GetShopResponse>), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetShopByIdAsync(Guid shopId)
@@ -177,6 +179,7 @@ namespace OrderFood_BE.WebAPI.Controllers
             catch (Exception ex)
             {
                 // Log lỗi nếu cần
+                Console.WriteLine("ERROR in CreateShopAsync: " + ex.ToString());
                 return StatusCode(500, ApiResponse<GetShopResponse>.Fail("Đã xảy ra lỗi khi cập nhật cửa hàng."));
             }
         }

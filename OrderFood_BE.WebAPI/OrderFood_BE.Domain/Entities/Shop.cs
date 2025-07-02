@@ -4,9 +4,9 @@ namespace OrderFood_BE.Domain.Entities
 {
     public class Shop : BaseEntity<Guid>
     {
-        public string Name { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
+        public string? Name { get; set; }
+        public string? ImageUrl { get; set; }
+        public string? Address { get; set; }
         public string Status { get; set; }
         public TimeSpan OpenHours { get; set; }
         public TimeSpan EndHours { get; set; }

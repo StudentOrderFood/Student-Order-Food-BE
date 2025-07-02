@@ -66,7 +66,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             // Tạo một access token mới
             var responseToken = new TokenResponse
             {
-                AccessToken = _jwtService.GenerateAccessToken(user.Role.Name),
+                AccessToken = _jwtService.GenerateAccessToken(user.Role.Name, user.Id),
                 RefreshToken = request.RefreshToken,
                 UserId = user.Id.ToString(),
                 UserRole = user.Role.Name
@@ -96,7 +96,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
             // Tạo JWT
             var tokenReponse = new TokenResponse
             {
-                AccessToken = _jwtService.GenerateAccessToken(user.Role.Name),
+                AccessToken = _jwtService.GenerateAccessToken(user.Role.Name, user.Id),
                 RefreshToken = await _jwtService.GenerateRefreshTokenAsync(user.Id),
                 UserId = user.Id.ToString(),
                 UserRole = user.Role.Name,
@@ -305,7 +305,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                 if (await _userRepository.ExistsByEmailAsync(email))
                 {
                     var existingUser = await _userRepository.GetByEmailAsync(email);
-                    var accessToken = _jwtService.GenerateAccessToken(existingUser.Role.Name);
+                    var accessToken = _jwtService.GenerateAccessToken(existingUser.Role.Name, existingUser.Id);
                     var refreshToken = await _jwtService.GenerateRefreshTokenAsync(existingUser.Id);
                     return new ApiResponse<TokenResponse>
                     {
@@ -345,7 +345,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Auth
                     await _userRepository.AddAsync(user);
                     await _userRepository.SaveChangesAsync();
 
-                    var accessToken = _jwtService.GenerateAccessToken(role.Name);
+                    var accessToken = _jwtService.GenerateAccessToken(role.Name, user.Id);
                     var refreshToken = await _jwtService.GenerateRefreshTokenAsync(user.Id);
                     return new ApiResponse<TokenResponse>
                     {

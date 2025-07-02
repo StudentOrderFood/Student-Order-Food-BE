@@ -24,53 +24,53 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
         {
             var user = await _userRepository.GetByIdAsync(request.OwnerId);
 
-            if (user == null || user.Role.Name != RoleEnum.ShopOwner.ToString())
+            if (user != null) //&& user.Role.Name == RoleEnum.ShopOwner.ToString()
             {
-                return ApiResponse<GetShopResponse>.Fail("User is not authorized to create a shop.");
+                var shop = new Domain.Entities.Shop
+                {
+                    Name = request.Name,
+                    ImageUrl = !string.IsNullOrEmpty(request.ImageUrl) ? request.ImageUrl : null,
+                    Address = request.Address,
+                    Status = ShopEnumStatus.Pending.ToString(), // Pending approval
+                    OpenHours = request.OpenHours,
+                    EndHours = request.EndHours,
+                    Rating = 0, // Default rating
+                    OwnerId = request.OwnerId
+                };
+
+                await _shopRepository.AddAsync(shop);
+                await _shopRepository.SaveChangesAsync();
+
+                var shopResponse = new GetShopResponse
+                {
+                    Id = shop.Id,
+                    Name = shop.Name,
+                    ImageUrl = shop.ImageUrl,
+                    Address = shop.Address,
+                    Status = shop.Status,
+                    OpenHours = shop.OpenHours,
+                    EndHours = shop.EndHours,
+                    Rating = shop.Rating,
+                    OwnerId = shop.OwnerId,
+                    Owner = new GetUserResponse
+                    {
+                        UserId = user.Id,
+                        FullName = user.FullName,
+                        UserName = user.UserName,
+                        Phone = user.Phone,
+                        Address = user.Address,
+                        Avatar = user.Avatar,
+                        Email = user.Email,
+                        Dob = user.Dob,
+                        RoleId = user.RoleId,
+                        RoleName = user.Role?.Name ?? string.Empty
+                    }
+                };
+
+                return ApiResponse<GetShopResponse>.Ok(shopResponse, "The request has been submitted and is awaiting approval.");
             }
 
-            var shop = new Domain.Entities.Shop
-            {
-                Name = request.Name,
-                ImageUrl = request.ImageUrl,
-                Address = request.Address,
-                Status = ShopEnumStatus.Pending.ToString(), // Pending approval
-                OpenHours = request.OpenHours,
-                EndHours = request.EndHours,
-                Rating = 0, // Default rating
-                OwnerId = request.OwnerId
-            };
-
-            await _shopRepository.AddAsync(shop);
-            await _shopRepository.SaveChangesAsync();
-
-            var shopResponse = new GetShopResponse
-            {
-                Id = shop.Id,
-                Name = shop.Name,
-                ImageUrl = shop.ImageUrl,
-                Address = shop.Address,
-                Status = shop.Status,
-                OpenHours = shop.OpenHours,
-                EndHours = shop.EndHours,
-                Rating = shop.Rating,
-                OwnerId = shop.OwnerId,
-                Owner = new GetUserResponse
-                {
-                    UserId = user.Id,
-                    FullName = user.FullName,
-                    UserName = user.UserName,
-                    Phone = user.Phone,
-                    Address = user.Address,
-                    Avatar = user.Avatar,
-                    Email = user.Email,
-                    Dob = user.Dob,
-                    RoleId = user.RoleId,
-                    RoleName = user.Role?.Name ?? string.Empty
-                }
-            };
-
-            return ApiResponse<GetShopResponse>.Ok(shopResponse, "The request has been submitted and is awaiting approval.");
+            return ApiResponse<GetShopResponse>.Fail("User is not authorized to create a shop.");
         }
 
         public async Task<ApiResponse<string>> ApproveOrRejectShopAsync(ApproveShopRequest request)
@@ -280,7 +280,10 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
             }
 
             shop.Name = request.Name;
-            shop.ImageUrl = request.ImageUrl;
+            if (!string.IsNullOrEmpty(request.ImageUrl))
+            {
+                shop.ImageUrl = request.ImageUrl;
+            }
             shop.Address = request.Address;
             shop.OpenHours = request.OpenHours;
             shop.EndHours = request.EndHours;
