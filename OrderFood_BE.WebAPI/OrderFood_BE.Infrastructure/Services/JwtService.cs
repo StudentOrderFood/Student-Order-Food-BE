@@ -25,11 +25,12 @@ namespace OrderFood_BE.Infrastructure.Services
             _jwtSettings = jwtSettings.Value;
             _repository = repository;
         }
-        public string GenerateAccessToken(string role)
+        public string GenerateAccessToken(string role, Guid id)
         {
             var claims = new Claim[]
             {
-                new(ClaimTypes.Role, role)
+                new(ClaimTypes.Role, role),
+                new(ClaimTypes.NameIdentifier, id.ToString()),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
