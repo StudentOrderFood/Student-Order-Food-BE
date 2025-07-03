@@ -186,8 +186,8 @@ namespace OrderFood_BE.WebAPI.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "ShopOwner")]
-        [ProducesResponseType(typeof(ApiResponse<PagingResponse<GetShopResponse>>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ApiResponse<PagingResponse<GetShopResponse>>), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ApiResponse<string>), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteShopAsync(Guid shopId)
         {
             var result = await _shopUseCase.DeleteShopAsync(shopId);
