@@ -22,6 +22,8 @@ namespace OrderFood_BE.Infrastructure.Extensions
 
             _ = services.AddScoped<IJwtService, JwtService>();
             _ = services.AddScoped<ICloudinaryService, CloudinaryService>();
+            _ = services.AddScoped<IMenuItemRepository, MenuItemRepository>();
+
             return services;
         }
     } 
