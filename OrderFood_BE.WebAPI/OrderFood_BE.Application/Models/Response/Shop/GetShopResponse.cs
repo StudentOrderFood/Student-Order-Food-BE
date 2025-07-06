@@ -15,5 +15,6 @@ namespace OrderFood_BE.Application.Models.Response.Shop
 
         public Guid OwnerId { get; set; }
         public GetUserResponse Owner { get; set; }
+        public List<GetShopImageResponse> Images { get; set; }
     }
 }

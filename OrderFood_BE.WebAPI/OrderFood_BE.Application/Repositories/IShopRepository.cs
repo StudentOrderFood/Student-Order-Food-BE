@@ -7,5 +7,6 @@ namespace OrderFood_BE.Application.Repositories
         Task<Shop?> GetShopByIdAsync(Guid shopId);
         Task<IEnumerable<Shop>?> GetAllShopsAsync();
         Task<IEnumerable<Shop>?> GetShopsByStatusAsync(string status);
+        Task AddShopImageAsync(ShopImage shopImage);
     }
 }
