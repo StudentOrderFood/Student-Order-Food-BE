@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderFood_BE.Application.Models.Requests.MenuItem;
+using OrderFood_BE.Application.Models.Response.MenuItem;
 using OrderFood_BE.Application.Services;
 using OrderFood_BE.Application.UseCase.Interfaces.MenuItem;
+using OrderFood_BE.Shared.Common;
+using System.Net;
 
 namespace OrderFood_BE.WebAPI.Controllers
 {
@@ -18,6 +21,7 @@ namespace OrderFood_BE.WebAPI.Controllers
             _cloudinaryService = cloudinaryService;
         }
         [HttpPost]
+        [ProducesResponseType(typeof(ApiResponse<GetMenuItemResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateMenuItemAsync([FromForm] CreateMenuItemRequest request, IFormFile? image)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -33,6 +37,7 @@ namespace OrderFood_BE.WebAPI.Controllers
 
 
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ApiResponse<GetMenuItemResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> UpdateMenuItemAsync(Guid id, [FromForm] UpdateMenuItemRequest request, IFormFile? image)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -47,6 +52,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ApiResponse<string>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteMenuItemAsync(Guid id)
         {
             var rs = await _menuItemUseCase.DeleteMenuItemAsync(id);
@@ -54,12 +60,15 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("shop/{id}")]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<GetMenuItemResponse>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenuItemsByShopId(Guid id)
         {
             var rs = await _menuItemUseCase.GetMenuItemByShopIdAsync(id);
             return Ok(rs);
         }
+
         [HttpGet]
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<GetMenuItemResponse>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllMenuItems()
         {
             var rs = await _menuItemUseCase.GetAllMenuItemsAsync();
@@ -67,6 +76,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ApiResponse<GetMenuItemResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenuItemByIdAsync(Guid id)
         {
             var rs = await _menuItemUseCase.GetMenuItemByIdAsync(id);
