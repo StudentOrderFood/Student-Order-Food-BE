@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using OrderFood_BE.Application.Repositories;
 using OrderFood_BE.Application.Services;
 using OrderFood_BE.Infrastructure.Persistence.Repositories;
@@ -22,6 +17,7 @@ namespace OrderFood_BE.Infrastructure.Extensions
             _ = services.AddScoped<IMenuItemRepository, MenuItemRepository>();
             _ = services.AddScoped<IVoucherRepository, VoucherRepository>();
             _ = services.AddScoped<IOrderRepository, OrderRepository>();
+            _ = services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
             _ = services.AddScoped<IJwtService, JwtService>();
             _ = services.AddScoped<ICloudinaryService, CloudinaryService>();

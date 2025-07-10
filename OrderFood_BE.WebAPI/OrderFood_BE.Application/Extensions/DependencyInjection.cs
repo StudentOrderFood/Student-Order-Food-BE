@@ -24,6 +24,7 @@ namespace OrderFood_BE.Application.Extensions
             _ = services.AddScoped<IMenuItemUseCase, MenuItemUseCase>();
             _ = services.AddScoped<IVoucherUseCase, VoucherUseCase>();
             _ = services.AddScoped<IOrderUseCase, OrderUseCase>();
+            _ = services.AddScoped<IFeedbackUseCase, FeedbackUseCase>();
 
             return services;
         }
