@@ -6,7 +6,7 @@ using OrderFood_BE.Application.UseCase.Interfaces.MenuItem;
 
 namespace OrderFood_BE.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class MenuItemController : ControllerBase
     {
