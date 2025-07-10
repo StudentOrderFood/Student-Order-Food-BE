@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CloudinaryDotNet;
+using Microsoft.AspNetCore.Mvc;
 using OrderFood_BE.Application.Models.Requests.Feedback;
 using OrderFood_BE.Application.Models.Response.Feedback;
+using OrderFood_BE.Application.Services;
 using OrderFood_BE.Application.UseCase.Interfaces.Feedback;
 using OrderFood_BE.Shared.Common;
 using System.Net;
@@ -14,16 +16,24 @@ namespace OrderFood_BE.WebAPI.Controllers
     public class FeedbacksController : ControllerBase
     {
         private readonly IFeedbackUseCase _feedbackUseCase;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public FeedbacksController(IFeedbackUseCase feedbackUseCase)
+        public FeedbacksController(IFeedbackUseCase feedbackUseCase, ICloudinaryService cloudinaryService)
         {
             _feedbackUseCase = feedbackUseCase;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<GetFeedbackResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> CreateFeedbackAsync([FromBody] CreateFeedbackRequest request)
+        public async Task<IActionResult> CreateFeedbackAsync([FromForm] CreateFeedbackRequest request, IFormFile? image)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (image != null)
+            {
+                var imageUrl = await _cloudinaryService.UploadImageAsync(image, "feedback");
+                request.ImageUrl = imageUrl;
+            }
             var result = await _feedbackUseCase.CreateFeedbackAsync(request);
             return Ok(result);
         }

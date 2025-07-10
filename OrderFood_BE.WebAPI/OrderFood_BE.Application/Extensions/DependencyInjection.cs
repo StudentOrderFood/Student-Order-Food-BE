@@ -1,11 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OrderFood_BE.Application.UseCase.Implementations.Auth;
+using OrderFood_BE.Application.UseCase.Implementations.Category;
+using OrderFood_BE.Application.UseCase.Implementations.Feedback;
 using OrderFood_BE.Application.UseCase.Implementations.MenuItem;
 using OrderFood_BE.Application.UseCase.Implementations.Order;
 using OrderFood_BE.Application.UseCase.Implementations.Shop;
 using OrderFood_BE.Application.UseCase.Implementations.User;
 using OrderFood_BE.Application.UseCase.Implementations.Voucher;
 using OrderFood_BE.Application.UseCase.Interfaces.Auth;
+using OrderFood_BE.Application.UseCase.Interfaces.Category;
+using OrderFood_BE.Application.UseCase.Interfaces.Feedback;
 using OrderFood_BE.Application.UseCase.Interfaces.MenuItem;
 using OrderFood_BE.Application.UseCase.Interfaces.Order;
 using OrderFood_BE.Application.UseCase.Interfaces.Shop;
@@ -25,6 +29,7 @@ namespace OrderFood_BE.Application.Extensions
             _ = services.AddScoped<IVoucherUseCase, VoucherUseCase>();
             _ = services.AddScoped<IOrderUseCase, OrderUseCase>();
             _ = services.AddScoped<IFeedbackUseCase, FeedbackUseCase>();
+            _ = services.AddScoped<ICategoryUseCase, CategoryUseCase>();
 
             return services;
         }
