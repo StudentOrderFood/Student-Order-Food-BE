@@ -21,6 +21,7 @@ namespace OrderFood_BE.Infrastructure.Extensions
             _ = services.AddScoped<IShopRepository, ShopRepository>();
             _ = services.AddScoped<IMenuItemRepository, MenuItemRepository>();
             _ = services.AddScoped<IVoucherRepository, VoucherRepository>();
+            _ = services.AddScoped<IOrderRepository, OrderRepository>();
 
             _ = services.AddScoped<IJwtService, JwtService>();
             _ = services.AddScoped<ICloudinaryService, CloudinaryService>();

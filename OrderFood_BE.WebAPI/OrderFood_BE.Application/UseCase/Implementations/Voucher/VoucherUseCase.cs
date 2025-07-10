@@ -67,7 +67,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Voucher
             voucher.Count = request.Count;
             voucher.IsActive = request.IsActive;
 
-            _voucherRepository.Update(voucher);
+            await _voucherRepository.UpdateAsync(voucher);
             await _voucherRepository.SaveChangesAsync();
 
             var response = new GetVoucherResponse
@@ -159,7 +159,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Voucher
             return ApiResponse<IEnumerable<GetVoucherResponse>>.Ok(responseList, "Vouchers retrieved successfully");
         }
 
-        public async Task<ApiResponse<IEnumerable<GetVoucherResponse>>> GetAvailableVouchersAsync()
+        public async Task<ApiResponse<IEnumerable<GetVoucherResponse>>> GetAllAvailableVouchersAsync()
         {
             var vouchers = await _voucherRepository.GetAvailableVouchersAsync();
             if (vouchers == null || !vouchers.Any())
