@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OrderFood_BE.Application.Models.Requests.User;
 using OrderFood_BE.Application.Models.Response.User;
 using OrderFood_BE.Application.UseCase.Interfaces.User;
 using OrderFood_BE.Shared.Common;
@@ -60,6 +61,22 @@ namespace OrderFood_BE.WebAPI.Controllers
         {
             var students = await _userUseCase.GetAllStudentAsync();
             return Ok(students);
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Admin,ShopOwner,Student")]
+        public async Task<IActionResult> UpdateProfile([FromBody] ProfileUpdateRequest request )
+        { 
+            var profile = await _userUseCase.UpdateProfileAsync(request);
+            return Ok(profile);
+        }
+
+        [HttpGet("checkPhoneNumberExists")]
+        [Authorize(Roles = "Admin,ShopOwner,Student")] // nếu bạn cần xác thực
+        public async Task<IActionResult> CheckPhoneNumberExists([FromQuery] string phoneNumber)
+        {
+            var result = await _userUseCase.CheckPhoneNumberExists(phoneNumber);
+            return Ok(result);
         }
     }
 }

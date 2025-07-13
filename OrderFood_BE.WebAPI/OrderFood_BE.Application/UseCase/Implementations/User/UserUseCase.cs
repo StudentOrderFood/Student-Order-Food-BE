@@ -1,4 +1,5 @@
-﻿using OrderFood_BE.Application.Models.Response.User;
+﻿using OrderFood_BE.Application.Models.Requests.User;
+using OrderFood_BE.Application.Models.Response.User;
 using OrderFood_BE.Application.Repositories;
 using OrderFood_BE.Application.UseCase.Interfaces.User;
 using OrderFood_BE.Shared.Common;
@@ -13,6 +14,21 @@ namespace OrderFood_BE.Application.UseCase.Implementations.User
         {
             _userRepository = userRepository;
         }
+
+        public async Task<ApiResponse<string>> CheckPhoneNumberExists(string phoneNumber)
+        {
+            var checkItem = await _userRepository.ExistsAsync(phoneNumber);
+            if (checkItem)
+            {
+                return ApiResponse<string>.Ok("Phone number already exists", "Phone number already exists");
+            }
+            else
+            {
+                return ApiResponse<string>.Ok("Phone number does not exist", "Phone number does not exist");
+            }
+
+        }
+
         public async Task<ApiResponse<List<GetUserResponse>>> GetAllAsync()
         {
             var users = await _userRepository.GetAllUserAsync();
@@ -126,6 +142,32 @@ namespace OrderFood_BE.Application.UseCase.Implementations.User
             };
 
             return ApiResponse<GetUserResponse>.Ok(response, "Lấy thông tin người dùng thành công.");
+        }
+
+        public async Task<ApiResponse<string>> UpdateProfileAsync(ProfileUpdateRequest request)
+        {
+            if (request == null)
+            {
+                return ApiResponse<string>.Fail("Yêu cầu cập nhật không hợp lệ.");
+            }
+
+            var user = await _userRepository.GetUserByIdAsync(request.UserId);
+            if (user == null || user.IsDeleted || !user.IsActive)
+            {
+                return ApiResponse<string>.Fail("Người dùng không tồn tại hoặc đã bị xóa hoặc không hoạt động.");
+            }
+
+            // Update user properties
+            user.FullName = request.FullName;
+            user.Phone = request.Phone;
+            user.Address = request.Address;
+            user.Dob = request.Dob;
+            user.Avatar = request.Avatar;
+
+            await _userRepository.UpdateAsync(user);
+            await _userRepository.SaveChangesAsync();
+
+            return ApiResponse<string>.Ok("Cập nhật thông tin người dùng thành công.", "Cập nhật thông tin người dùng thành công.");
         }
     }
 }
