@@ -194,5 +194,12 @@ namespace OrderFood_BE.WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("detail/{shopId:guid}")]
+        public async Task<IActionResult> GetShopDetail(Guid shopId)
+        {
+            var result = await _shopUseCase.GetShopIncludeItemsAndCategoryByIdAsync(shopId);
+            return Ok(result);
+        }
+
     }
 }

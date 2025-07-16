@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderFood_BE.Application.Models.Requests.Shop;
+using OrderFood_BE.Application.Models.Response.Category;
+using OrderFood_BE.Application.Models.Response.MenuItem;
 using OrderFood_BE.Application.Models.Response.Shop;
 using OrderFood_BE.Application.Models.Response.User;
 using OrderFood_BE.Application.Repositories;
@@ -364,5 +366,57 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
             return ApiResponse<string>.Ok("", "Thêm ảnh thành công.");
         }
 
+        public async Task<ApiResponse<GetShopDetailResponse>> GetShopIncludeItemsAndCategoryByIdAsync(Guid shopId)
+        {
+            var shop = await _shopRepository.GetShopDetailByIdAsync(shopId, includeMenuItems: true, includeCategoryItems: true);
+            if (shop == null)
+            {
+                return ApiResponse<GetShopDetailResponse>.Fail("Cannot find the shop match with Id");
+            }
+            // Ensure that menu items are not deleted and are available
+            var validMenuItems = shop.MenuItems
+                .Where(mi => !mi.IsDeleted && mi.IsAvailable)
+                .ToList();
+
+            var distinctCategories = validMenuItems
+                .Where(mi => mi.Category != null)
+                .Select(mi => new GetCategoriesInShopMenu
+                {
+                    Id = mi.Category.Id,
+                    Name = mi.Category.Name
+                })
+                .DistinctBy(c => c.Id)
+                .ToList();
+
+            var response = new GetShopDetailResponse
+            {
+                Id = shop.Id,
+                Name = shop.Name,
+                ImageUrl = shop.ImageUrl,
+                Address = shop.Address,
+                Status = shop.Status,
+                OpenHours = shop.OpenHours,
+                EndHours = shop.EndHours,
+                Rating = shop.Rating,
+                Images = new List<GetShopImageResponse>(shop.ShopImages.Select(img => new GetShopImageResponse
+                {
+                    Id = img.Id,
+                    ImageUrl = img.ImageUrl
+                })),
+                Categories = distinctCategories,
+                MenuItems = validMenuItems
+                    .Select(mi => new GetMenuItemResponse
+                    {
+                        Id = mi.Id,
+                        Name = mi.Name,
+                        Description = mi.Description,
+                        Price = mi.Price,
+                        ImageUrl = mi.ImageUrl,
+                        CategoryId = mi.CategoryId,
+                    }).ToList()
+            };
+
+            return ApiResponse<GetShopDetailResponse>.Ok(response, "Get Shop Detail Info Success");
+        }
     }
 }
