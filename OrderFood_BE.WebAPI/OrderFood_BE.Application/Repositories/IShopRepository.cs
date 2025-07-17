@@ -18,5 +18,6 @@ namespace OrderFood_BE.Application.Repositories
         /// <param name="includeCategoryItems"></param>
         /// <returns></returns>
         Task<Shop?> GetShopDetailByIdAsync(Guid shopId, bool includeMenuItems, bool includeCategoryItems);
+        Task<IEnumerable<Shop>> GetPopularShopsByTimeAndMealAsync(TimeSpan currentTime, List<string> mealType);
     }
 }

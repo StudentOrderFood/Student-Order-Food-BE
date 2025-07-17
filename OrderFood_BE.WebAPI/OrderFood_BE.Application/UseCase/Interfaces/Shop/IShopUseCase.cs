@@ -29,5 +29,6 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Shop
         Task<ApiResponse<GetShopResponse>> UpdateShopAsync(UpdateShopRequest request);
         Task<ApiResponse<string>> DeleteShopAsync(Guid shopId);
         Task<ApiResponse<string>> AddShopImageAsync(UpdateShopImageRequest request);
+        Task<ApiResponse<List<GetPopularShopResponse>>> GetPopularShopAsync(string currentTime);
     }
 }

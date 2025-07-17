@@ -201,5 +201,13 @@ namespace OrderFood_BE.WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("popular")]
+        public async Task<IActionResult> GetPopularShop(string currentTime)
+        {
+            var result = await _shopUseCase.GetPopularShopAsync(currentTime);
+            return Ok(result);
+        }
+
+
     }
 }

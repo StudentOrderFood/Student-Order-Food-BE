@@ -418,5 +418,36 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
 
             return ApiResponse<GetShopDetailResponse>.Ok(response, "Get Shop Detail Info Success");
         }
+
+        public async Task<ApiResponse<List<GetPopularShopResponse>>> GetPopularShopAsync(string currentTime)
+        {
+            if (!TimeSpan.TryParse(currentTime, out var currentTimeSpan))
+                return ApiResponse<List<GetPopularShopResponse>>.Fail("Invalid time format.");
+
+            var mealType = TimeUtils.DetermineMeal(currentTimeSpan); // Dinner, Lunch, Breakfast
+
+            var popularShops = await _shopRepository.GetPopularShopsByTimeAndMealAsync(currentTimeSpan, mealType);
+            if (popularShops == null || !popularShops.Any())
+            {
+                return ApiResponse<List<GetPopularShopResponse>>.Fail("No popular shops found for the specified time.");
+            }
+            var shopResponses = popularShops.Select(s => new GetPopularShopResponse
+            {
+                Id = s.Id,
+                Name = s.Name,
+                ImageUrl = s.ImageUrl,
+                Address = s.Address,
+                Status = s.Status,
+                OpenHours = s.OpenHours,
+                EndHours = s.EndHours,
+                Rating = s.Rating,
+                CategoryIds = s.MenuItems
+                    .Where(mi => !mi.IsDeleted && mi.IsAvailable)
+                    .Select(mi => mi.CategoryId)
+                    .Distinct()
+                    .ToList()
+            }).ToList();
+            return ApiResponse<List<GetPopularShopResponse>>.Ok(shopResponses, "Get Popular Shops Success");
+        }
     }
 }
