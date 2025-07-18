@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderFood_BE.Application.Models.Requests.User;
 using OrderFood_BE.Application.Models.Response.User;
 using OrderFood_BE.Application.UseCase.Interfaces.User;
 using OrderFood_BE.Shared.Common;
-using OrderFood_BE.Shared.Enums;
-using System.Net;
 
 namespace OrderFood_BE.WebAPI.Controllers
 {
@@ -65,8 +63,8 @@ namespace OrderFood_BE.WebAPI.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin,ShopOwner,Student")]
-        public async Task<IActionResult> UpdateProfile([FromBody] ProfileUpdateRequest request )
-        { 
+        public async Task<IActionResult> UpdateProfile([FromBody] ProfileUpdateRequest request)
+        {
             var profile = await _userUseCase.UpdateProfileAsync(request);
             return Ok(profile);
         }
