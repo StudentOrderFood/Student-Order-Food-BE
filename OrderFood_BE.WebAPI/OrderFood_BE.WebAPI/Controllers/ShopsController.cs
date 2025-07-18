@@ -194,5 +194,20 @@ namespace OrderFood_BE.WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("detail/{shopId:guid}")]
+        public async Task<IActionResult> GetShopDetail(Guid shopId)
+        {
+            var result = await _shopUseCase.GetShopIncludeItemsAndCategoryByIdAsync(shopId);
+            return Ok(result);
+        }
+
+        [HttpGet("popular")]
+        public async Task<IActionResult> GetPopularShop(string currentTime)
+        {
+            var result = await _shopUseCase.GetPopularShopAsync(currentTime);
+            return Ok(result);
+        }
+
+
     }
 }
