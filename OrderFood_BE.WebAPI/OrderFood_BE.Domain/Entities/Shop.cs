@@ -12,6 +12,12 @@ namespace OrderFood_BE.Domain.Entities
         public TimeSpan EndHours { get; set; }
         public double Rating { get; set; }
 
+        public string? BusinessLicenseImageUrl { get; set; }
+        public string? Note { get; set; }
+
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+
         public Guid OwnerId { get; set; }
         public User Owner { get; set; }
 
