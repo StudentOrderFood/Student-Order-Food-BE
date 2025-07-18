@@ -31,6 +31,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         public async Task<IActionResult> CreateShopAsync(
             [FromForm] CreateShopRequest request,
             IFormFile? image,
+            IFormFile? businessLicenseImage,
             List<IFormFile>? additionalImages)
         {
             //// Validate ảnh đại diện
@@ -51,6 +52,12 @@ namespace OrderFood_BE.WebAPI.Controllers
                     // Upload ảnh đại diện
                     var imageUrl = await _cloudinaryService.UploadImageAsync(image, "shops");
                     request.ImageUrl = imageUrl;
+                }
+
+                if (businessLicenseImage != null)
+                {
+                    var licenseUrl = await _cloudinaryService.UploadImageAsync(businessLicenseImage, "shops/business-licenses");
+                    request.BusinessLicenseImageUrl = licenseUrl;  // Gán vào request
                 }
 
                 // Tạo shop
@@ -134,6 +141,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         public async Task<IActionResult> UpdateShopAsync(
             [FromForm] UpdateShopRequest request,
             IFormFile? image,
+            IFormFile? businessLicenseImage,
             List<IFormFile>? additionalImages)
         {
             try
@@ -150,6 +158,12 @@ namespace OrderFood_BE.WebAPI.Controllers
                 {
                     var imageUrl = await _cloudinaryService.UploadImageAsync(image, "shops");
                     request.ImageUrl = imageUrl;
+                }
+
+                if (businessLicenseImage != null)
+                {
+                    var licenseUrl = await _cloudinaryService.UploadImageAsync(businessLicenseImage, "shops/business-licenses");
+                    request.BusinessLicenseImageUrl = licenseUrl;  // Gán vào request
                 }
 
                 // Gán ownerId vào request để kiểm tra trong UseCase (nếu cần)

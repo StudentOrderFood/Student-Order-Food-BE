@@ -35,6 +35,9 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                     OpenHours = request.OpenHours,
                     EndHours = request.EndHours,
                     Rating = 0, // Default rating
+                    BusinessLicenseImageUrl = !string.IsNullOrEmpty(request.BusinessLicenseImageUrl) ? request.BusinessLicenseImageUrl : null,
+                    Latitude = request.Latitude,
+                    Longitude = request.Longitude,
                     OwnerId = request.OwnerId
                 };
 
@@ -51,6 +54,10 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                     OpenHours = shop.OpenHours,
                     EndHours = shop.EndHours,
                     Rating = shop.Rating,
+                    BusinessLicenseImageUrl = shop.BusinessLicenseImageUrl,
+                    Note = shop.Note,
+                    Latitude = shop.Latitude,
+                    Longitude = shop.Longitude,
                     OwnerId = shop.OwnerId,
                     Owner = new GetUserResponse
                     {
@@ -87,6 +94,11 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                 ? ShopEnumStatus.Approved.ToString()
                 : ShopEnumStatus.Rejected.ToString();
 
+            if (!string.IsNullOrEmpty(request.Note))
+            {
+                shop.Note = request.Note;
+            }
+
             await _shopRepository.UpdateAsync(shop);
             await _shopRepository.SaveChangesAsync();
 
@@ -120,6 +132,10 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                 OpenHours = s.OpenHours,
                 EndHours = s.EndHours,
                 Rating = s.Rating,
+                BusinessLicenseImageUrl = s.BusinessLicenseImageUrl,
+                Note = s.Note,
+                Latitude = s.Latitude,
+                Longitude = s.Longitude,
                 OwnerId = s.OwnerId,
                 Owner = new GetUserResponse
                 {
@@ -176,6 +192,10 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                 OpenHours = shop.OpenHours,
                 EndHours = shop.EndHours,
                 Rating = shop.Rating,
+                BusinessLicenseImageUrl = shop.BusinessLicenseImageUrl,
+                Note = shop.Note,
+                Latitude = shop.Latitude,
+                Longitude = shop.Longitude,
                 OwnerId = shop.OwnerId,
                 Owner = new GetUserResponse
                 {
@@ -228,6 +248,10 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                 OpenHours = s.OpenHours,
                 EndHours = s.EndHours,
                 Rating = s.Rating,
+                BusinessLicenseImageUrl = s.BusinessLicenseImageUrl,
+                Note = s.Note,
+                Latitude = s.Latitude,
+                Longitude = s.Longitude,
                 OwnerId = s.OwnerId,
                 Owner = new GetUserResponse
                 {
@@ -287,6 +311,12 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
             shop.Address = request.Address;
             shop.OpenHours = request.OpenHours;
             shop.EndHours = request.EndHours;
+            if (!string.IsNullOrEmpty(request.BusinessLicenseImageUrl))
+            {
+                shop.BusinessLicenseImageUrl = request.BusinessLicenseImageUrl;
+            }
+            shop.Latitude = request.Latitude;
+            shop.Longitude = request.Longitude;
 
             await _shopRepository.UpdateAsync(shop);
             await _shopRepository.SaveChangesAsync();
@@ -301,6 +331,10 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                 OpenHours = shop.OpenHours,
                 EndHours = shop.EndHours,
                 Rating = shop.Rating,
+                BusinessLicenseImageUrl = shop.BusinessLicenseImageUrl,
+                Note = shop.Note,
+                Latitude = shop.Latitude,
+                Longitude = shop.Longitude,
                 OwnerId = shop.OwnerId,
                 Owner = new GetUserResponse
                 {

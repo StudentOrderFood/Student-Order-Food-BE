@@ -12,6 +12,10 @@ namespace OrderFood_BE.Application.Models.Response.Shop
         public TimeSpan OpenHours { get; set; }
         public TimeSpan EndHours { get; set; }
         public double Rating { get; set; }
+        public string? BusinessLicenseImageUrl { get; set; } = string.Empty;
+        public string? Note { get; set; } = string.Empty;
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
         public Guid OwnerId { get; set; }
         public GetUserResponse Owner { get; set; }
