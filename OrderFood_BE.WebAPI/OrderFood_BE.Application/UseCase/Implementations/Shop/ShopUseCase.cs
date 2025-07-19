@@ -432,6 +432,8 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                 OpenHours = shop.OpenHours,
                 EndHours = shop.EndHours,
                 Rating = shop.Rating,
+                Latitude = shop.Latitude,
+                Longitude = shop.Longitude,
                 Images = new List<GetShopImageResponse>(shop.ShopImages.Select(img => new GetShopImageResponse
                 {
                     Id = img.Id,
@@ -475,6 +477,8 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                 OpenHours = s.OpenHours,
                 EndHours = s.EndHours,
                 Rating = s.Rating,
+                Latitude = s.Latitude,
+                Longitude = s.Longitude,
                 CategoryIds = s.MenuItems
                     .Where(mi => !mi.IsDeleted && mi.IsAvailable)
                     .Select(mi => mi.CategoryId)

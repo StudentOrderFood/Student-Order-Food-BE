@@ -13,6 +13,8 @@ namespace OrderFood_BE.Application.Models.Response.Shop
         public TimeSpan OpenHours { get; set; }
         public TimeSpan EndHours { get; set; }
         public double Rating { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
         // List Category
         public List<GetCategoriesInShopMenu> Categories { get; set; }
