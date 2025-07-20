@@ -71,6 +71,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                         Avatar = user.Avatar,
                         Email = user.Email,
                         Dob = user.Dob,
+                        WalletBalance = user.WalletBalance,
                         RoleId = user.RoleId,
                         RoleName = user.Role?.Name ?? string.Empty
                     }
@@ -149,6 +150,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                     Avatar = s.Owner.Avatar,
                     Email = s.Owner.Email,
                     Dob = s.Owner.Dob,
+                    WalletBalance = s.Owner.WalletBalance,
                     RoleId = s.Owner.RoleId,
                     RoleName = s.Owner.Role?.Name ?? string.Empty
                 },
@@ -209,6 +211,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                     Avatar = shop.Owner.Avatar,
                     Email = shop.Owner.Email,
                     Dob = shop.Owner.Dob,
+                    WalletBalance = shop.Owner.WalletBalance,
                     RoleId = shop.Owner.RoleId,
                     RoleName = shop.Owner.Role?.Name ?? string.Empty
                 },
@@ -265,6 +268,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                     Avatar = s.Owner.Avatar,
                     Email = s.Owner.Email,
                     Dob = s.Owner.Dob,
+                    WalletBalance = s.Owner.WalletBalance,
                     RoleId = s.Owner.RoleId,
                     RoleName = s.Owner.Role?.Name ?? string.Empty
                 },
@@ -348,6 +352,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Shop
                     Avatar = shop.Owner.Avatar,
                     Email = shop.Owner.Email,
                     Dob = shop.Owner.Dob,
+                    WalletBalance = shop.Owner.WalletBalance,
                     RoleId = shop.Owner.RoleId,
                     RoleName = shop.Owner.Role?.Name ?? string.Empty
                 },
