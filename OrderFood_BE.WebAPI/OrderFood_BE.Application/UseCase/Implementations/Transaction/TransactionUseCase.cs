@@ -71,13 +71,13 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Transaction
             return ApiResponse<GetTransactionResponse>.Ok(response, "Withdraw request created successfully");
         }
 
-        public async Task<ApiResponse<List<GetTransactionResponse>>> GetPendingWithdrawRequestsAsync()
+        public async Task<ApiResponse<List<GetPendingTransactionResponse>>> GetPendingWithdrawRequestsAsync()
         {
             var transactions = await _transactionRepository.GetPendingWithdrawRequestsAsync();
             if (!transactions.Any())
-                return ApiResponse<List<GetTransactionResponse>>.Fail("No pending withdraw requests found");
+                return ApiResponse<List<GetPendingTransactionResponse>>.Fail("No pending withdraw requests found");
 
-            var response = transactions.Select(t => new GetTransactionResponse
+            var response = transactions.Select(t => new GetPendingTransactionResponse
             {
                 Id = t.Id,
                 Amount = t.Amount,
@@ -88,10 +88,13 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Transaction
                 PaymentTime = t.PaymentTime,
                 CreatedAt = t.CreatedAt,
                 UserId = t.UserId,
-                OrderId = t.OrderId
+                UserName = t.User?.UserName,
+                FullName = t.User?.FullName,
+                Email = t.User?.Email,
+                Phone = t.User?.Phone
             }).ToList();
 
-            return ApiResponse<List<GetTransactionResponse>>.Ok(response, "Pending withdraw requests retrieved successfully");
+            return ApiResponse<List<GetPendingTransactionResponse>>.Ok(response, "Pending withdraw requests retrieved successfully");
         }
 
         public async Task<ApiResponse<GetTransactionResponse>> ProcessWithdrawRequestAsync(WithdrawApprovalRequest request)

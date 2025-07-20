@@ -19,6 +19,7 @@ namespace OrderFood_BE.Infrastructure.Persistence.Repositories
         {
             return await _context.HistoryTransactions
                 .Where(t => t.Type == "Withdraw" && t.Status == "Pending" && !t.IsDeleted)
+                .Include(t => t.User)
                 .OrderByDescending(t => t.CreatedAt)
                 .ToListAsync();
         }
