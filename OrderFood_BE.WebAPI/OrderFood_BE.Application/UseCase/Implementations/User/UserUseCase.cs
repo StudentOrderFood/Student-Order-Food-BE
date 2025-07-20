@@ -49,6 +49,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.User
                     Avatar = u.Avatar,
                     Email = u.Email,
                     Dob = u.Dob,
+                    WalletBalance = u.WalletBalance,
                     RoleId = u.RoleId,
                     RoleName = u.Role?.Name ?? string.Empty
                 })
@@ -78,6 +79,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.User
                     Avatar = u.Avatar,
                     Email = u.Email,
                     Dob = u.Dob,
+                    WalletBalance = u.WalletBalance,
                     RoleId = u.RoleId,
                     RoleName = u.Role?.Name ?? string.Empty
                 }).ToList();
@@ -106,6 +108,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.User
                     Avatar = u.Avatar,
                     Email = u.Email,
                     Dob = u.Dob,
+                    WalletBalance = u.WalletBalance,
                     RoleId = u.RoleId,
                     RoleName = u.Role?.Name ?? string.Empty
                 }).ToList();
@@ -137,6 +140,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.User
                 Avatar = user.Avatar,
                 Email = user.Email,
                 Dob = user.Dob,
+                WalletBalance = user.WalletBalance,
                 RoleId = user.RoleId,
                 RoleName = user.Role?.Name ?? string.Empty
             };

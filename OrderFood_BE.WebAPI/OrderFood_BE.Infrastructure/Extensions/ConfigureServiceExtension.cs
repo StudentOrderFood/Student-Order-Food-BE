@@ -20,6 +20,7 @@ namespace OrderFood_BE.Infrastructure.Extensions
             _ = services.AddScoped<IOrderRepository, OrderRepository>();
             _ = services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             _ = services.AddScoped<ICategoryRepository, CategoryRepository>();
+            _ = services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             _ = services.AddScoped<IJwtService, JwtService>();
             _ = services.AddScoped<ICloudinaryService, CloudinaryService>();
