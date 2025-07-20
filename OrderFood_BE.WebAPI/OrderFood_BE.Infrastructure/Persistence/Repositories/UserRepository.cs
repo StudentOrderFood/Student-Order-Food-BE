@@ -55,5 +55,15 @@ namespace OrderFood_BE.Infrastructure.Persistence.Repositories
                 .Where(u => u.IsDeleted == false && u.IsActive == true && u.Role.Name != RoleEnum.Admin.ToString())
                 .ToListAsync();
         }
+
+        public async Task<User?> GetUserByShopId(Guid shopId)
+        {
+            return await _context.Users
+                .Include(u => u.Shops)
+                .FirstOrDefaultAsync(u =>
+                    u.IsDeleted == false &&
+                    u.IsActive == true &&
+                    u.Shops.Any(s => s.Id == shopId));
+        }
     }
 }

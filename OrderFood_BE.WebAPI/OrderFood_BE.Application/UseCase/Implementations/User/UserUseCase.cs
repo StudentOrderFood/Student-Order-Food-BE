@@ -173,5 +173,22 @@ namespace OrderFood_BE.Application.UseCase.Implementations.User
 
             return ApiResponse<string>.Ok("Cập nhật thông tin người dùng thành công.", "Cập nhật thông tin người dùng thành công.");
         }
+
+        public async Task<bool> UpdateUserWallet(Guid shopId, decimal amount)
+        {
+            if (shopId == Guid.Empty || amount <= 0)
+            {
+                return false; // Invalid parameters
+            }
+            var user = await _userRepository.GetUserByShopId(shopId);
+            if (user == null || user.IsDeleted || !user.IsActive)
+            {
+                return false; // User not found or inactive
+            }
+            user.WalletBalance += amount;
+            await _userRepository.UpdateAsync(user);
+            await _userRepository.SaveChangesAsync();
+            return true; // Update successful
+        }
     }
 }

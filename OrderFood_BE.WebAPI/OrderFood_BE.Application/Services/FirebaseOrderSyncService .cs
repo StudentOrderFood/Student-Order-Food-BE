@@ -28,6 +28,7 @@ namespace OrderFood_BE.Application.Services
                 ShopId = order.ShopId,
                 PaymentMethod = order.PaymentMethod,
                 TotalAmount = order.TotalAmount,
+                OrderStatus = order.OrderStatus,
                 OrderItems = order.OrderItems.Select(item => new OrderItemFireBase
                 {
                     ItemId = item.ItemId,
@@ -37,7 +38,13 @@ namespace OrderFood_BE.Application.Services
             };
 
             var url = $"{FirebaseBaseUrl}{OrdersNode}.json";
-            var json = JsonSerializer.Serialize(firebaseOrder);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            var json = JsonSerializer.Serialize(firebaseOrder, options);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync(url, content);

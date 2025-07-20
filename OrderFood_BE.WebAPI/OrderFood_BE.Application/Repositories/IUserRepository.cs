@@ -15,5 +15,6 @@ namespace OrderFood_BE.Application.Repositories
         Task<User?> GetUserByEmailPhoneOrUserName(string val);
         Task<User?> GetUserByIdAsync(Guid userId);
         Task<IEnumerable<User>?> GetAllUserAsync();
+        Task<User?> GetUserByShopId(Guid shopId);
     }
 }

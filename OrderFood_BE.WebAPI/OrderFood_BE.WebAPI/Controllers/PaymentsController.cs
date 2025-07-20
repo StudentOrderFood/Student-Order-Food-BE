@@ -8,6 +8,7 @@ using OrderFood_BE.Application.Models.Requests.Payment;
 using OrderFood_BE.Application.Models.Response.Payment;
 using OrderFood_BE.Application.Services;
 using OrderFood_BE.Application.UseCase.Interfaces.Order;
+using OrderFood_BE.Application.UseCase.Interfaces.User;
 using OrderFood_BE.Infrastructure.Services;
 
 namespace OrderFood_BE.WebAPI.Controllers
@@ -19,13 +20,15 @@ namespace OrderFood_BE.WebAPI.Controllers
         private readonly IPayOSService _payOSService;
         private readonly IFirebaseOrderSyncService _firebaseOrderSyncService;
         private readonly ITemporaryOrderCacheService _orderCache;
+        private readonly IUserUseCase _userUseCase;
 
 
-        public PaymentsController(IPayOSService payOSService, IFirebaseOrderSyncService firebaseOrderSyncService, ITemporaryOrderCacheService orderCache)
+        public PaymentsController(IPayOSService payOSService, IFirebaseOrderSyncService firebaseOrderSyncService, ITemporaryOrderCacheService orderCache, IUserUseCase userUseCase)
         {
             _payOSService = payOSService;
             _firebaseOrderSyncService = firebaseOrderSyncService;
             _orderCache = orderCache;
+            _userUseCase = userUseCase;
         }
 
         [HttpPost("create-payment")]
@@ -85,6 +88,11 @@ namespace OrderFood_BE.WebAPI.Controllers
             {
                 // Gọi UseCase để lưu vào DB hoặc xử lý logic
                 await _firebaseOrderSyncService.PushOrderAsync(cachedOrder);
+                var updateWallet = await _userUseCase.UpdateUserWallet(cachedOrder.ShopId, cachedOrder.TotalAmount);
+                if (!updateWallet)
+                {
+                    return StatusCode(500, "Failed to update ShopOwner wallet balance.");
+                }
 
                 return Ok(new
                 {

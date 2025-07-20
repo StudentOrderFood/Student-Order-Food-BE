@@ -53,5 +53,6 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.User
 
         Task<ApiResponse<string>> UpdateProfileAsync(ProfileUpdateRequest request);
         Task<ApiResponse<string>> CheckPhoneNumberExists(string phoneNumber);
+        Task<bool> UpdateUserWallet(Guid shopId, decimal amount);
     }
 }
