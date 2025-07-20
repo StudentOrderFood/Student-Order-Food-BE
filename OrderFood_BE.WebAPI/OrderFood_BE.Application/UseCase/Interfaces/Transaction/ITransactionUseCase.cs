@@ -9,7 +9,7 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.Transaction
     {
         Task<ApiResponse<List<GetTransactionResponse>>> GetAllTransactionsByUserIdAsync(Guid userId);
         Task<ApiResponse<GetTransactionResponse>> RequestWithdrawAsync(WithdrawRequest request);
-        Task<ApiResponse<List<GetTransactionResponse>>> GetPendingWithdrawRequestsAsync();
+        Task<ApiResponse<List<GetPendingTransactionResponse>>> GetPendingWithdrawRequestsAsync();
         Task<ApiResponse<GetTransactionResponse>> ProcessWithdrawRequestAsync(WithdrawApprovalRequest request);
     }
 }
