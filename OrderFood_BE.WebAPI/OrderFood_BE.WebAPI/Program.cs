@@ -40,7 +40,7 @@ namespace OrderFood_BE.WebAPI
 
 
             app.MapControllers();
-
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.Run();
         }
     }
