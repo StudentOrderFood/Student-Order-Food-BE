@@ -7,8 +7,8 @@ namespace OrderFood_BE.Domain.Entities
         public decimal Amount { get; set; }
         public string Description { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty; // Ví dụ: "Payment", "TopUp", "Withdraw"
-        public string OrderCode { get; set; } = string.Empty; // "Pending", "Success", "Failed"
-        public string Status { get; set; } = string.Empty;
+        public string OrderCode { get; set; } = string.Empty; 
+        public string Status { get; set; } = string.Empty; // "Pending", "Success", "Failed"
         public DateTime PaymentTime { get; set; }
 
         public Guid UserId { get; set; }

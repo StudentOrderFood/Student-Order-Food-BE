@@ -14,5 +14,13 @@ namespace OrderFood_BE.Infrastructure.Persistence.Repositories
                 .OrderByDescending(t => t.CreatedAt)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<HistoryTransaction>> GetPendingWithdrawRequestsAsync()
+        {
+            return await _context.HistoryTransactions
+                .Where(t => t.Type == "Withdraw" && t.Status == "Pending" && !t.IsDeleted)
+                .OrderByDescending(t => t.CreatedAt)
+                .ToListAsync();
+        }
     }
 }
