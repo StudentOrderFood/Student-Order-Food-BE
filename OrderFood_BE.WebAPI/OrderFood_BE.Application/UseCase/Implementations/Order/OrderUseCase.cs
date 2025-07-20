@@ -1,4 +1,5 @@
-﻿using OrderFood_BE.Application.Models.Requests.Order;
+﻿using System.Text.Json;
+using OrderFood_BE.Application.Models.Requests.Order;
 using OrderFood_BE.Application.Models.Response.Order;
 using OrderFood_BE.Application.Repositories;
 using OrderFood_BE.Application.UseCase.Interfaces.Order;
@@ -166,5 +167,65 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Order
 
         }
 
+        public async Task<ApiResponse<string>> CreateOrderFromFirebaseAsync(string firebaseId, OrderRequestFireBase request)
+        {
+            var requestJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            if (request == null)
+            {
+                return ApiResponse<string>.Fail("Request is null");
+            }
+            if (string.IsNullOrEmpty(request.CustomerId.ToString()) || string.IsNullOrEmpty(request.ShopId.ToString()))
+            {
+                return ApiResponse<string>.Fail("CustomerId or ShopId is missing");
+            }
+            if (request.OrderItems == null || !request.OrderItems.Any())
+            {
+                return ApiResponse<string>.Fail("Order must contain at least one item");
+            }
+
+            Console.WriteLine("FirebaseId: " + firebaseId);
+            Console.WriteLine("Request: " + JsonSerializer.Serialize(request));
+
+            var newOrder = new Domain.Entities.Order();
+
+            newOrder.TotalAmount = request.TotalAmount;
+            newOrder.Status = OrderStatusEnum.Pending.ToString();
+            newOrder.OrderTime = DateTime.Now;
+            newOrder.FirebaseId = firebaseId;
+            newOrder.CustomerId = request.CustomerId;
+            newOrder.ShopId = request.ShopId;
+            newOrder.OrderItems = request.OrderItems.Select(oi => new OrderItem
+            {
+                ItemId = oi.ItemId,
+                Quantity = oi.Quantity,
+                Price = oi.Price,
+            }).ToList();
+            newOrder.PaymentMethod = request.PaymentMethod;
+
+            await _orderRepository.AddAsync(newOrder);
+            await _orderRepository.SaveChangesAsync();
+            return ApiResponse<string>.Ok("Add order into DB successfully", "Add order into DB successfully");
+        }
+
+        public async Task<int> UpdateOrderStatusFromFirebaseAsync(string firebaseId, string newStatus)
+        {
+            if (string.IsNullOrEmpty(firebaseId) || string.IsNullOrEmpty(newStatus))
+            {
+                return -1;
+            }
+            var order = await _orderRepository.GetOrderByFirebaseId(firebaseId);
+            if (order == null)
+            {
+                return -1;
+            }
+            order.Status = newStatus;
+            await _orderRepository.UpdateAsync(order);
+            await _orderRepository.SaveChangesAsync();
+            return 1;
+        }
     }
 }

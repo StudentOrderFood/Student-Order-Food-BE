@@ -141,6 +141,7 @@ namespace OrderFood_BE.Infrastructure.Persistence.DBContext
                 entity.Property(e => e.TotalAmount).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.Status).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.OrderTime).IsRequired();
+                entity.Property(e => e.PaymentMethod).HasMaxLength(20);
                 entity.HasOne(o => o.Customer)
                       .WithMany(u => u.Orders)
                       .HasForeignKey(o => o.CustomerId)

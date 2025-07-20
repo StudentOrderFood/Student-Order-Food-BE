@@ -34,5 +34,12 @@ namespace OrderFood_BE.Infrastructure.Persistence.Repositories
                 .Include(o => o.OrderItems)
                 .FirstOrDefaultAsync();
         }
+
+        public Task<Order> GetOrderByFirebaseId(string firebaseId)
+        {
+            return _context.Orders
+                .Where(o => o.FirebaseId == firebaseId && !o.IsDeleted)
+                .FirstOrDefaultAsync();
+        }
     }
 }

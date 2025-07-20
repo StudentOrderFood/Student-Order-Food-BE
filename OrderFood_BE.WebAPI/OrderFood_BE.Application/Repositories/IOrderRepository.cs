@@ -7,5 +7,6 @@ namespace OrderFood_BE.Application.Repositories
         Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(Guid customerId);
         Task<IEnumerable<Order>> GetOrdersByShopIdAsync(Guid shopId);
         Task<Order> GetOrderWithItemsAsync(Guid orderId);
+        Task<Order> GetOrderByFirebaseId(string firebaseId);
     }
 }

@@ -89,10 +89,10 @@ namespace OrderFood.BackgroundServices
 
                                     if (order != null)
                                     {
-                                        _logger.LogInformation($"[Firebase] Initial load - Order ID: {firebaseId}, Payment: {order.TotalAmount}");
+                                        //_logger.LogInformation($"[Firebase] Initial load - Order ID: {firebaseId}, Payment: {order.TotalAmount}");
                                     }
                                 }
-                             }
+                            }
                             else // Khi push thêm 1 đơn mới
                             {
                                 var firebaseId = path.Split('/')[0]; // Lấy order id
@@ -102,7 +102,29 @@ namespace OrderFood.BackgroundServices
                                 if (order != null)
                                 {
                                     // Call UseCase chỗ này là xong
-                                    _logger.LogInformation($"[Firebase] New/Updated order: {firebaseId}, Payment: {order.TotalAmount}");
+                                    //_logger.LogInformation($"[Firebase] New/Updated order: {firebaseId}, Payment: {order.TotalAmount}");
+                                    await orderUseCase.CreateOrderFromFirebaseAsync(firebaseId, order);
+                                }
+                            }
+                        }
+                        else if (dataElement.ValueKind == JsonValueKind.String)
+                        {
+                            var pathParts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                            if (pathParts.Length == 2)
+                            {
+                                var firebaseId = pathParts[0];
+                                var fieldUpdated = pathParts[1];
+                                var newValue = dataElement.GetString();
+
+                                if (fieldUpdated == "orderStatus")
+                                {
+                                    _logger.LogInformation($"[Firebase] Status updated for Order ID: {firebaseId} -> {newValue}");
+
+                                    await orderUseCase.UpdateOrderStatusFromFirebaseAsync(firebaseId, newValue);
+                                }
+                                else
+                                {
+                                    _logger.LogInformation($"[Firebase] Ignored field update: {fieldUpdated} = {newValue}");
                                 }
                             }
                         }
