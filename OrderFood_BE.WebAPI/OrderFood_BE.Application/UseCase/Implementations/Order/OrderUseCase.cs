@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using OrderFood_BE.Application.Models.Requests.Order;
 using OrderFood_BE.Application.Models.Response.Order;
+using OrderFood_BE.Application.Models.Response.Payment;
 using OrderFood_BE.Application.Repositories;
 using OrderFood_BE.Application.UseCase.Interfaces.Order;
 using OrderFood_BE.Domain.Entities;
@@ -206,9 +207,9 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Order
             }).ToList();
             newOrder.PaymentMethod = request.PaymentMethod;
 
-            await _orderRepository.AddAsync(newOrder);
+            var newItem = await _orderRepository.AddAsync(newOrder);
             await _orderRepository.SaveChangesAsync();
-            return ApiResponse<string>.Ok("Add order into DB successfully", "Add order into DB successfully");
+            return ApiResponse<string>.Ok(newItem.Id.ToString(), "Add order into DB successfully");
         }
 
         public async Task<int> UpdateOrderStatusFromFirebaseAsync(string firebaseId, string newStatus)
@@ -226,6 +227,11 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Order
             await _orderRepository.UpdateAsync(order);
             await _orderRepository.SaveChangesAsync();
             return 1;
+        }
+
+        public Task<int> HandleSuccessfulPaymentAsync(BankingOrderRequest model)
+        {
+            throw new NotImplementedException();
         }
     }
 }

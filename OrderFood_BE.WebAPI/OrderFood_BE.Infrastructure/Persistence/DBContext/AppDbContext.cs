@@ -142,6 +142,7 @@ namespace OrderFood_BE.Infrastructure.Persistence.DBContext
                 entity.Property(e => e.Status).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.OrderTime).IsRequired();
                 entity.Property(e => e.PaymentMethod).HasMaxLength(20);
+                entity.Property(e => e.PayosOrderCode).HasMaxLength(11);
                 entity.HasOne(o => o.Customer)
                       .WithMany(u => u.Orders)
                       .HasForeignKey(o => o.CustomerId)

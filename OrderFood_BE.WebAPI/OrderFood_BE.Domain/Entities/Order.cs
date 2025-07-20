@@ -9,6 +9,7 @@ namespace OrderFood_BE.Domain.Entities
         public DateTime OrderTime { get; set; }
         public string FirebaseId { get; set; }
         public string PaymentMethod { get; set; } // Ví dụ: "COD", "Bank"
+        public long PayosOrderCode { get; set; }
         public Guid CustomerId { get; set; }
         public User Customer { get; set; }
 

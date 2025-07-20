@@ -23,8 +23,11 @@ namespace OrderFood_BE.Infrastructure.Extensions
 
             _ = services.AddScoped<IJwtService, JwtService>();
             _ = services.AddScoped<ICloudinaryService, CloudinaryService>();
+            _ = services.AddScoped<IPayOSService, PayOSService>();
+            _ = services.AddScoped<ITemporaryOrderCacheService, TemporaryOrderCacheService>();
+            _ = services.AddScoped<IFirebaseOrderSyncService, FirebaseOrderSyncService>();
 
-            
+
             return services;
         }
     } 
