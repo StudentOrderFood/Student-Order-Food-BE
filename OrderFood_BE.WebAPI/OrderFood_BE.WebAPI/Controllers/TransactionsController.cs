@@ -37,5 +37,25 @@ namespace OrderFood_BE.WebAPI.Controllers
             }
             return BadRequest(result);
         }
+
+        [HttpGet("withdraw/pending")]
+        [ProducesResponseType(typeof(ApiResponse<List<GetTransactionResponse>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPendingWithdrawRequests()
+        {
+            var result = await _transactionUseCase.GetPendingWithdrawRequestsAsync();
+            return Ok(result);
+        }
+
+        [HttpPost("withdraw/process")]
+        [ProducesResponseType(typeof(ApiResponse<GetTransactionResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ProcessWithdrawRequest([FromBody] WithdrawApprovalRequest request)
+        {
+            var result = await _transactionUseCase.ProcessWithdrawRequestAsync(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
 }
