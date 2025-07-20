@@ -57,7 +57,7 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Transaction
                 Description = request.Description ?? "Withdraw request",
                 Type = "Withdraw",
                 Status = "Pending",
-                CreatedAt = DateTime.Now
+                PaymentTime = DateTime.Now
             };
 
             await _transactionRepository.AddAsync(transaction);
