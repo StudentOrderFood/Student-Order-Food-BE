@@ -7,6 +7,7 @@ namespace OrderFood_BE.Domain.Entities
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime OrderTime { get; set; }
+        public string FirebaseId { get; set; }
 
         public Guid CustomerId { get; set; }
         public User Customer { get; set; }

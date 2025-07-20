@@ -18,6 +18,7 @@ namespace OrderFood_BE.Domain.Entities
         public string Email { get; set; } = string.Empty;
         public DateTime Dob { get; set; }
         public bool IsActive { get; set; } = true;
+        public decimal WalletBalance { get; set; } = 0;
 
         // Navigation properties
         public Guid RoleId { get; set; }
