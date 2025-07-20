@@ -39,7 +39,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("withdraw/pending")]
-        [ProducesResponseType(typeof(ApiResponse<List<GetTransactionResponse>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<List<GetPendingTransactionResponse>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPendingWithdrawRequests()
         {
             var result = await _transactionUseCase.GetPendingWithdrawRequestsAsync();
