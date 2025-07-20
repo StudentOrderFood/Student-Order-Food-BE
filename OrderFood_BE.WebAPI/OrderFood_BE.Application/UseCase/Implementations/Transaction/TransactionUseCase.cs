@@ -9,10 +9,12 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Transaction
     public class TransactionUseCase : ITransactionUseCase
     {
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IUserRepository _userRepository;
 
-        public TransactionUseCase(ITransactionRepository transactionRepository)
+        public TransactionUseCase(ITransactionRepository transactionRepository, IUserRepository userRepository)
         {
             _transactionRepository = transactionRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<ApiResponse<List<GetTransactionResponse>>> GetAllTransactionsByUserIdAsync(Guid userId)
@@ -110,6 +112,23 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Transaction
             if (!string.IsNullOrWhiteSpace(request.AdminNote))
             {
                 transaction.Description += $"\nNote: {request.AdminNote}";
+            }
+
+            if (request.IsApproved)
+            {
+                var user = await _userRepository.GetByIdAsync(transaction.UserId);
+                if (user == null)
+                {
+                    return ApiResponse<GetTransactionResponse>.Fail("User not found for the transaction");
+                }
+                
+                if (user.WalletBalance < transaction.Amount)
+                {
+                    return ApiResponse<GetTransactionResponse>.Fail("Insufficient balance for the user");
+                }
+
+                user.WalletBalance -= transaction.Amount;
+                await _userRepository.UpdateAsync(user);
             }
 
             await _transactionRepository.UpdateAsync(transaction);
