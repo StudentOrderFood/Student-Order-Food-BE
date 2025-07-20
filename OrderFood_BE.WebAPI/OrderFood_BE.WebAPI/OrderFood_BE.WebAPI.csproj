@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OrderFood.BackgroundServices\OrderFood.BackgroundServices.csproj" />
     <ProjectReference Include="..\OrderFood_BE.Application\OrderFood_BE.Application.csproj">
       <Private>True</Private>
     </ProjectReference>

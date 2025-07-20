@@ -1,4 +1,5 @@
 
+using OrderFood.BackgroundServices;
 using OrderFood_BE.Application.Extensions;
 using OrderFood_BE.Infrastructure.Extensions;
 using OrderFood_BE.WebAPI.Extensions;
@@ -20,6 +21,8 @@ namespace OrderFood_BE.WebAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddHttpClient();
+            builder.Services.AddHostedService<FirebaseOrderListenerService>();
 
             // 
             builder.WebHost.UseUrls("https://0.0.0.0:7111");
