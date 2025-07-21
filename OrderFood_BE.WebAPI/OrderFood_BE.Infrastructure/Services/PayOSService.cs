@@ -62,7 +62,7 @@ namespace OrderFood_BE.Infrastructure.Services
             }
             else
             {
-                return $"Tạo link thanh toán thất bại: {desc}";
+                return $"Create link failed: {desc}";
             }
             //Console.WriteLine("PayOS response: " + responseContent);
             //Console.WriteLine("json: " + json);
