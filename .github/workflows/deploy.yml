@@ -1,0 +1,32 @@
+name: Build & Deploy OrderFood API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to VPS via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no root@${{ secrets.VPS_HOST }} << 'EOF'
+            cd /root/services/Student-Order-Food-BE/OrderFood_BE.WebAPI
+            git pull
+
+            docker rm -f orderfood-api || true
+            docker rmi orderfood-api || true
+
+            docker build -t orderfood-api .
+            docker run -d -p 8085:8080 --name orderfood-api orderfood-api
+EOF
