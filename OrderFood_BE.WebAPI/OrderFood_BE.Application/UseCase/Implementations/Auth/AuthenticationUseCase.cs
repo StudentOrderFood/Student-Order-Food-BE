@@ -1,6 +1,4 @@
 ﻿using System.Text.Json;
-using FirebaseAdmin;
-using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
 using OrderFood_BE.Application.Models.Requests.Auth;
 using OrderFood_BE.Application.Models.Response.Auth;
