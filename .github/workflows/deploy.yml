@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-
+# Edit yml
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,4 +29,4 @@ jobs:
 
             docker build -t orderfood-api .
             docker run -d -p 8085:8080 --name orderfood-api orderfood-api
-EOF
+          EOF
