@@ -26,7 +26,7 @@ namespace OrderFood_BE.WebAPI
             builder.Services.AddMemoryCache();
 
             // 
-            builder.WebHost.UseUrls("https://0.0.0.0:7111");
+   //         builder.WebHost.UseUrls("https://0.0.0.0:7111");
 
             var app = builder.Build();
 
