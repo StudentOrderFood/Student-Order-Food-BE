@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OrderFood_BE.Application.Models.Requests.User;
+﻿using OrderFood_BE.Application.Models.Requests.User;
 using OrderFood_BE.Application.Models.Response.User;
 using OrderFood_BE.Shared.Common;
 
@@ -54,5 +49,6 @@ namespace OrderFood_BE.Application.UseCase.Interfaces.User
         Task<ApiResponse<string>> UpdateProfileAsync(ProfileUpdateRequest request);
         Task<ApiResponse<string>> CheckPhoneNumberExists(string phoneNumber);
         Task<bool> UpdateUserWallet(Guid shopId, decimal amount);
+        Task<ApiResponse<List<GetCustomerResponse>>> GetAllCustomerAsync();
     }
 }

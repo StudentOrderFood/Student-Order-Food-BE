@@ -58,6 +58,27 @@ namespace OrderFood_BE.Application.UseCase.Implementations.User
             return ApiResponse<List<GetUserResponse>>.Ok(response, "Lấy danh sách người dùng thành công.");
         }
 
+        public async Task<ApiResponse<List<GetCustomerResponse>>> GetAllCustomerAsync()
+        {
+            var customers = await _userRepository.GetAllUserAsync();
+            if (customers == null || !customers.Any())
+            {
+                return ApiResponse<List<GetCustomerResponse>>.Fail("Không tìm thấy khách hàng nào.");
+            }
+            var response = customers
+                .Where(u => u.Role.Name == RoleEnum.Student.ToString())
+                .Select(u => new GetCustomerResponse
+                {
+                    UserId = u.Id,
+                    FullName = u.FullName,
+                    Phone = u.Phone,
+                    Address = u.Address
+                }).ToList();
+
+            return ApiResponse<List<GetCustomerResponse>>.Ok(response, "Lấy danh sách khách hàng thành công.");
+
+        }
+
         public async Task<ApiResponse<List<GetUserResponse>>> GetAllShopOwnerAsync()
         {
             var users = await _userRepository.GetAllUserAsync();

@@ -41,6 +41,14 @@ namespace OrderFood_BE.WebAPI.Controllers
             return Ok(users);
         }
 
+        [HttpGet("all-cus")]
+        [Authorize(Roles = "Admin,ShopOwner")]
+        public async Task<IActionResult> GetAllCustomersAsync()
+        {
+            var customers = await _userUseCase.GetAllCustomerAsync();
+            return Ok(customers);
+        }
+
         [HttpGet("shop-owners")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<List<GetUserResponse>>), (int)HttpStatusCode.OK)]
