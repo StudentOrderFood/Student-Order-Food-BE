@@ -1,7 +1,11 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
+
+ENV ASPNETCORE_URLS=http://+:8080
+
 EXPOSE 80
 EXPOSE 443
+EXPOSE 8080 
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
@@ -15,10 +19,8 @@ COPY ["OrderFood.BackgroundServices/OrderFood.BackgroundServices.csproj", "Order
 
 RUN dotnet restore "OrderFood_BE.WebAPI/OrderFood_BE.WebAPI.csproj"
 
-
 COPY . .
 
-# Build
 RUN dotnet build "OrderFood_BE.WebAPI/OrderFood_BE.WebAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish
