@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderFood_BE.Application.Models.Requests.Order;
 using OrderFood_BE.Application.Models.Requests.Payment;
@@ -32,6 +33,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpPost("create-payment")]
+        [Authorize]
         public async Task<IActionResult> CreatePaymentQrCode([FromBody] BankingOrderRequest request)
         {
             if (!ModelState.IsValid)
@@ -74,6 +76,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpPost("payment-result")]
+        [Authorize]
         public async Task<IActionResult> HandlePaymentResult([FromBody] PaymentResultRequest request)
         {
             if (!_orderCache.TryGetOrder(request.OrderCode, out var cachedOrder))

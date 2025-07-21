@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderFood_BE.Application.Models.Requests.Order;
 using OrderFood_BE.Application.Models.Response.Order;
 using OrderFood_BE.Application.UseCase.Interfaces.Order;
@@ -21,6 +22,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("shop/{shopId}")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<GetOrderResponse>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetOrdersByShopIdAsync(Guid shopId)
         {
@@ -29,6 +31,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("customer/{customerId}")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<GetOrderResponse>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetOrdersByCustomerIdAsync(Guid customerId)
         {
@@ -37,6 +40,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<GetOrderResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetOrderByIdAsync(Guid id)
         {
@@ -45,6 +49,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<GetOrderResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateOrderAsync([FromBody] CreateOrderRequest request)
         {
@@ -54,6 +59,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpPut("{id}/cancel")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<string>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CancelOrderAsync(Guid id)
         {

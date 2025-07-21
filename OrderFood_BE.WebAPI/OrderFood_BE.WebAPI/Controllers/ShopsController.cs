@@ -209,6 +209,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("detail/{shopId:guid}")]
+        [Authorize]
         public async Task<IActionResult> GetShopDetail(Guid shopId)
         {
             var result = await _shopUseCase.GetShopIncludeItemsAndCategoryByIdAsync(shopId);
@@ -216,6 +217,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("popular")]
+        [Authorize]
         public async Task<IActionResult> GetPopularShop(string currentTime)
         {
             var result = await _shopUseCase.GetPopularShopAsync(currentTime);

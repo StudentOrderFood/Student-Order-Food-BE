@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderFood_BE.Application.Models.Requests.MenuItem;
 using OrderFood_BE.Application.Models.Response.MenuItem;
@@ -21,6 +22,7 @@ namespace OrderFood_BE.WebAPI.Controllers
             _cloudinaryService = cloudinaryService;
         }
         [HttpPost]
+        [Authorize(Roles = "ShopOwner")]
         [ProducesResponseType(typeof(ApiResponse<GetMenuItemResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateMenuItemAsync([FromForm] CreateMenuItemRequest request, IFormFile? image)
         {
@@ -37,6 +39,7 @@ namespace OrderFood_BE.WebAPI.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "ShopOwner")]
         [ProducesResponseType(typeof(ApiResponse<GetMenuItemResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> UpdateMenuItemAsync(Guid id, [FromForm] UpdateMenuItemRequest request, IFormFile? image)
         {
@@ -52,6 +55,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ShopOwner")]
         [ProducesResponseType(typeof(ApiResponse<string>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteMenuItemAsync(Guid id)
         {
@@ -60,6 +64,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("shop/{id}")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<GetMenuItemResponse>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenuItemsByShopId(Guid id)
         {
@@ -68,6 +73,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<GetMenuItemResponse>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllMenuItems()
         {
@@ -76,6 +82,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<GetMenuItemResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenuItemByIdAsync(Guid id)
         {

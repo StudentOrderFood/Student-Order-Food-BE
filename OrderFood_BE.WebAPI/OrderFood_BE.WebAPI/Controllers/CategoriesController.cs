@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderFood_BE.Application.Models.Requests.Category;
 using OrderFood_BE.Application.Models.Response.Category;
 using OrderFood_BE.Application.UseCase.Interfaces.Category;
@@ -21,6 +22,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<GetCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Create([FromBody] CreateCategoryRequest request)
         {
@@ -29,6 +31,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<GetCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCategoryRequest request)
         {
@@ -37,6 +40,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ApiResponse<string>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -45,6 +49,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<GetCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -53,6 +58,7 @@ namespace OrderFood_BE.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<GetCategoryResponse>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll()
         {
