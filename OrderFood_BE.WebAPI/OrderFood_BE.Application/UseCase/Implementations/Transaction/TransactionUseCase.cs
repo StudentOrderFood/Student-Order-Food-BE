@@ -45,6 +45,13 @@ namespace OrderFood_BE.Application.UseCase.Implementations.Transaction
             if (request == null || request.UserId == Guid.Empty || request.Amount <= 0)
                 return ApiResponse<GetTransactionResponse>.Fail("Invalid withdraw request");
 
+            var user = await _userRepository.GetByIdAsync(request.UserId);
+            if (user == null)
+                return ApiResponse<GetTransactionResponse>.Fail("User not found");
+
+            if (user.WalletBalance < request.Amount)
+                return ApiResponse<GetTransactionResponse>.Fail("Insufficient wallet balance for the user");
+
             var transaction = new Domain.Entities.HistoryTransaction
             {
                 UserId = request.UserId,
